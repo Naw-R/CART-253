@@ -1,5 +1,5 @@
 /**
- * My House
+ * Starter House
  * Pippin Barr
  * 
  * Draws a house with shapes.
@@ -19,12 +19,25 @@ function setup() {
 }
 
 /**
- * Draws a house
+ * Draws a house and its environment
  */
 function draw() {
+    drawSky();
+    drawCloud();
+    drawGround();
+    drawHouse();
+
+}
+
+function drawSky(){
     // The sky
     background(150, 200, 250);
+}
 
+/**
+ * Draws a white cloud
+ */
+function drawCloud(){
     // A cloud
     push();
     noStroke();
@@ -38,14 +51,24 @@ function draw() {
     ellipse(190, 130, 60, 60);
     ellipse(220, 120, 60, 60);
     pop();
+}
 
+/**
+ * Draws a ground
+ */
+function drawGround(){
     // The ground
     push();
     noStroke();
     fill(200);
     rect(0, 400, 640, 480);
     pop();
+}
 
+/**
+ * Draws a house with window, roof, etc...
+ */
+function drawHouse(){
     // The main body of the house
     push();
     noStroke();
