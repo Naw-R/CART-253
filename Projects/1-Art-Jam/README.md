@@ -1,21 +1,17 @@
-# Template p5 Project
+# Ball Interaction Game
+Author : Rowan Nasser
 
-Author Name
-
-[View this project online](URL_FOR_THE_RUNNING_PROJECT)
+## [View the project online](URL_TO_THE_PROJECT)
 
 ## Description
-
-This description should help the reader understand what the program is, what any controls do, and perhaps what the desired experience it.
+This is an interactive game where the player uses the mouse to push a bouncing ball away. 
+The ball moves dynamically and changes direction when it comes close to the edges of the canvas 
+or interacts with the player's cursor. The player can influence the ball's movement by hovering near it, 
+creating an engaging avoidance gameplay experience.
 
 ## Credits
-
-This bit should describe what tools were used. For example:
-
-This project uses [p5.js](https://p5js.org).
+This project uses [p5.js](https://p5js.org) and the videos by [Pippin Barr](https://pippinbarr.com/cart253/schedule)
 
 ## Attribution
+This project was inspired by basic interactive examples using p5.js. 
 
-This bit should attribute any assets or other elements used taken from other sources. For example:
-
-The fish images were sourced from the [Creative Commons image "Georgia Aquarium Fish"](https://search.creativecommons.org/photos/96f6f770-eac1-488c-8abb-16bee7bcc874) by Mike Johnston which is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/.
