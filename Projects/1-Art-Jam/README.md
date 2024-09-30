@@ -1,7 +1,7 @@
 # Ball Interaction Game
 Author : Rowan Nasser
 
-## [View the project online](URL_TO_THE_PROJECT)
+## [View the project online](https://naw-r.github.io/CART-253/Projects/1-Art-Jam/)
 
 ## Description
 This is an interactive game where the player uses the mouse to push a bouncing ball away. 
