@@ -20,15 +20,13 @@
  * Use mouseX and mouseY to allow for some user interaction/input
  * Use p5’s map() function in some capacity (learn about it by reading the map() reference page)
  * Use at least one conditional to make the program respond to a changing variable
- * 
- * 
  */
 
 let ballX, ballY;   // Create Ball position X and Y
 let ballSize = 50;  //Create Ball Size
 let ballSpeedX = 2; //Create ball Speed in the X axis
 let ballSpeedY = 2; //Create ball spead in the Y axis
-let margin = 10; //Create margin for the boundry
+let margin = 10;    //Create margin for the boundry
 
 
 /**
@@ -51,7 +49,7 @@ function setup() {
  * Draw the map and the components of the game
 */
 function draw() {
-    // Make the background White (specified as hex)
+    // Make the background White 
     background('#FFFFFF');
 
     drawMouse();
@@ -69,7 +67,7 @@ function drawMouse() {
     push();
     // No line around the shape
     noStroke();
-    // Make it red (RGB)
+    // Make it red
     fill(255, 0, 0);
     // Draw a 50x50 circle at the mouse position
     ellipse(mouseX, mouseY, 50, 50);
