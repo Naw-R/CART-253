@@ -199,6 +199,22 @@ function displayStory() {
     textSize(32);
     text(storyLines[storyStage], width / 2, height / 2);  // Display the current story line
 
+    drawContinueButton();
+    drawSkipButton();
+    checkButtons();
+
+}
+
+// Function to start the game after the story
+function startGame() {
+    // Don't show the cursor
+    noCursor();
+    isGameStarted = true;  // Change flag to indicate the game has started
+    storyStage = 0;  // Reset the story stage for future use if needed
+    background('#FFFFFF');
+}
+
+function drawContinueButton() {
     // Draw Continue button
     fill(0);
     rect(continueButtonX, buttonY, buttonWidth, buttonHeight);
@@ -207,6 +223,9 @@ function displayStory() {
     textAlign(CENTER, CENTER);
     text("Continue", continueButtonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
+}
+
+function drawSkipButton() {
     // Draw Skip button
     fill(0);
     rect(skipButtonX, buttonY, buttonWidth, buttonHeight);
@@ -214,7 +233,9 @@ function displayStory() {
     textSize(20);
     textAlign(CENTER, CENTER);
     text("Skip", skipButtonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+}
 
+function checkButtons(){
     // Check if the user clicked the Skip button
     if (mouseIsPressed && mouseX > skipButtonX && mouseX < skipButtonX + buttonWidth &&
         mouseY > buttonY && mouseY < buttonY + buttonHeight) {
@@ -225,7 +246,6 @@ function displayStory() {
     if (mouseIsPressed && mouseX > continueButtonX && mouseX < continueButtonX + buttonWidth &&
         mouseY > buttonY && mouseY < buttonY + buttonHeight && millis() - lastClickTime > clickDelay) {
         lastClickTime = millis();
-
         if (storyStage < storyLines.length - 1) {
             storyStage++;
         } else {
@@ -235,11 +255,3 @@ function displayStory() {
 }
 
 
-// Function to start the game after the story
-function startGame() {
-    // Don't show the cursor
-    noCursor();
-    isGameStarted = true;  // Change flag to indicate the game has started
-    storyStage = 0;  // Reset the story stage for future use if needed
-    background('#FFFFFF');
-}
