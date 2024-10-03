@@ -28,6 +28,19 @@ let ballSpeedX = 2; //Create ball Speed in the X axis
 let ballSpeedY = 2; //Create ball spead in the Y axis
 let margin = 10;    //Create margin for the boundry
 
+let storyStage = 0;  // Track the current stage of the story
+let isGameStarted = false; // Track whether the game has started
+let lastClickTime = 0; // Track the time of the last valid click
+let clickDelay = 500;  // 500ms delay between clicks
+
+let storyLines = [
+    "Welcome to the battle between the Brain and the Heart.",
+    "The Blue Ball represents your Brain, logical and calculating.",
+    "The Red Ball represents your Heart, filled with emotion and desire.",
+    "Your task is simple: keep the Heart away from the Brain's rational logic.",
+    "Will you let your emotions win, or will reason prevail?",
+    "Let's find out."
+];
 
 /**
  * Create a canvas
@@ -35,9 +48,6 @@ let margin = 10;    //Create margin for the boundry
 function setup() {
     // A window Size canvas 
     createCanvas(windowWidth, windowHeight);
-
-    // Don't show the cursor
-    noCursor();
 
     // Set beginning ball location to a random place in the screen
     // The margin allows the ball not to be hiddin outside the boundries of the screen
@@ -49,16 +59,16 @@ function setup() {
  * Draw the map and the components of the game
 */
 function draw() {
-    // Make the background White 
-    background('#FFFFFF');
-
-    drawMouse();
-
-    drawBall();
-
-    drawBoundarySquare();
-
-    pushBallAway();
+    if (!isGameStarted) {
+        displayStory();  // Show the story if the game hasn't started
+    } else {
+        // If the game has started, continue with the existing game code
+        background('#FFFFFF');
+        drawMouse();
+        drawBall();
+        drawBoundarySquare();
+        pushBallAway();
+    }
 
 }
 
@@ -145,4 +155,37 @@ function pushBallAway() {
     // Limit the ball's speed to prevent it from becoming too fast
     ballSpeedX = constrain(ballSpeedX, -10, 10);
     ballSpeedY = constrain(ballSpeedY, -10, 10);
+}
+
+// Function to display the story line by line
+function displayStory() {
+    background('#F4ECE2');  // Set the background to a light beige color
+
+    fill(0);  // Set text color to black
+    textAlign(CENTER, CENTER);
+    textSize(32);
+    text(storyLines[storyStage], width / 2, height / 2);  // Display the current story line
+
+    textSize(24);
+    text("Click to continue", width / 2, height - 100);  // Instruction to proceed
+
+    // Check if enough time has passed since the last click
+    if (mouseIsPressed && millis() - lastClickTime > clickDelay) {
+        lastClickTime = millis(); // Update the last click time to the current time
+
+        if (storyStage < storyLines.length - 1) {
+            storyStage++;  // Go to the next stage of the story
+        } else {
+            startGame();  // Start the game once the story ends
+        }
+    }
+}
+
+// Function to start the game after the story
+function startGame() {
+    // Don't show the cursor
+    noCursor();
+    isGameStarted = true;  // Change flag to indicate the game has started
+    storyStage = 0;  // Reset the story stage for future use if needed
+    background('#FFFFFF');
 }
