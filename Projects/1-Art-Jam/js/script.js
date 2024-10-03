@@ -29,7 +29,7 @@ let ballX, ballY;   // Create Ball position X and Y
 let ballSize = 50;  //Create Ball Size
 let ballSpeedX = 2; //Create ball Speed in the X axis
 let ballSpeedY = 2; //Create ball spead in the Y axis
-let margin = 10;    //Create margin for the boundry
+let margin = 10;    //Create margin for the boundary
 
 let storyStage = 0;  // Track the current stage of the story
 let isGameStarted = false; // Track whether the game has started
@@ -42,12 +42,9 @@ let buttonY;
 let buttonWidth = 100;
 let buttonHeight = 40;
 
-
 let score = 0;  // Initialize the score
 let lastScoredTime = 0;  // Track the last time the score was incremented
 let scoreDelay = 1000;   // Delay (in milliseconds) before the score can increase again
-
-
 
 let storyLines = [
     "Welcome to the battle between the Brain and the Heart.",
@@ -73,7 +70,7 @@ function setup() {
     // Set the positions for Continue and Skip buttons
     continueButtonX = width / 2 - buttonWidth - 20;  // Continue button on the left side
     skipButtonX = width / 2 + 20;  // Skip button on the right side
-    buttonY = height - 100;  // Y position of the buttons (near the bottom of the screen)
+    buttonY = height - 200;  // Y position of the buttons (near the bottom of the screen)
 }
 
 /**
@@ -94,12 +91,8 @@ function draw() {
 
         pushBallAway();
 
-        // Display the score
-        fill(0);
-        textSize(32);
-        text("Score: " + score, 80, 50);  // Display the score at the top left
+        displayScore();
     }
-
 }
 
 function drawMouse() {
@@ -149,7 +142,6 @@ function drawBall() {
     checkBoundry();
 }
 
-
 function checkBoundry() {
     // Check X boundaries and adjust position if necessary
     if (ballX > width - ballSize) {
@@ -181,12 +173,8 @@ function pushBallAway() {
         ballSpeedX += cos(angle) * 0.2; // Control the push strength horizontally
         ballSpeedY += sin(angle) * 0.2; // Control the push strength vertically
     }
-
-    // Increment score if red ball (mouse) touches the blue ball and enough time has passed
-    if (distance < ballSize / 2 + 25 && millis() - lastScoredTime > scoreDelay) {
-        score++;  // Increment score
-        lastScoredTime = millis();  // Update the last score time
-    }
+    
+    IncrementScore();
 
     // Limit the ball's speed to prevent it from becoming too fast
     ballSpeedX = constrain(ballSpeedX, -10, 10);
@@ -238,7 +226,7 @@ function drawSkipButton() {
     text("Skip", skipButtonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 }
 
-function checkButtons(){
+function checkButtons() {
     // Check if the user clicked the Skip button
     if (mouseIsPressed && mouseX > skipButtonX && mouseX < skipButtonX + buttonWidth &&
         mouseY > buttonY && mouseY < buttonY + buttonHeight) {
@@ -254,5 +242,20 @@ function checkButtons(){
         } else {
             startGame();  // Start the game when the story is complete
         }
+    }
+}
+
+function displayScore() {
+    // Display the score
+    fill(0);
+    textSize(32);
+    text("Score: " + score, 80, 50);  // Display the score at the top left
+}
+
+function IncrementScore(){
+    // Increment score if red ball (mouse) touches the blue ball and enough time has passed
+    if (distance < ballSize / 2 + 25 && millis() - lastScoredTime > scoreDelay) {
+        score++;  // Increment score
+        lastScoredTime = millis();  // Update the last score time
     }
 }
