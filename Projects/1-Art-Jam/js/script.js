@@ -33,6 +33,8 @@ let isGameStarted = false; // Track whether the game has started
 let lastClickTime = 0; // Track the time of the last valid click
 let clickDelay = 500;  // 500ms delay between clicks
 
+let score = 0;  // Initialize the score
+
 let storyLines = [
     "Welcome to the battle between the Brain and the Heart.",
     "The Blue Ball represents your Brain, logical and calculating.",
@@ -64,10 +66,19 @@ function draw() {
     } else {
         // If the game has started, continue with the existing game code
         background('#FFFFFF');
+
         drawMouse();
+
         drawBall();
+
         drawBoundarySquare();
+
         pushBallAway();
+
+        // Display the score
+        fill(0);
+        textSize(32);
+        text("Score: " + score, 50, 50);  // Display the score at the top left
     }
 
 }
@@ -150,6 +161,11 @@ function pushBallAway() {
         // Adjust ball speed to push it away from the mouse with controlled strength
         ballSpeedX += cos(angle) * 0.2; // Control the push strength horizontally
         ballSpeedY += sin(angle) * 0.2; // Control the push strength vertically
+    }
+
+    // Increment score if red ball (mouse) touches the blue ball
+    if (distance < ballSize / 2 + 25) {  // Adjust for ball size and mouse size (50px diameter)
+        score++;  // Increment score
     }
 
     // Limit the ball's speed to prevent it from becoming too fast
