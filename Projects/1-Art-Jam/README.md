@@ -4,10 +4,7 @@ Author : Rowan Nasser
 ## [View the project online](https://naw-r.github.io/CART-253/Projects/1-Art-Jam/)
 
 ## Description
-This is an interactive game where the player uses the mouse to push a bouncing ball away. 
-The ball moves dynamically and changes direction when it comes close to the edges of the canvas 
-or interacts with the player's cursor. The player can influence the ball's movement by hovering near it, 
-creating an engaging avoidance gameplay experience.
+This is an interactive game where the player controls a red ball with the mouse to influence the movement of a bouncing blue ball. The blue ball moves dynamically within a boundary, changing direction when it hits the edges or when it’s repelled by the red ball. The closer the player’s cursor gets to the blue ball, the stronger the push effect, creating a fun and engaging challenge as the player tries to control and avoid the blue ball’s movements.
 
 ## Credits
 This project uses [p5.js](https://p5js.org) and the videos by [Pippin Barr](https://pippinbarr.com/cart253/schedule)

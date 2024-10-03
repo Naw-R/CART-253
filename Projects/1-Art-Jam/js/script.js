@@ -7,8 +7,11 @@
  * Date of Creation : September 19th 2024
  * Due Date ; October 3rd 2024
  * 
- * The project is about a Blue ball that bounces over the Boundary defined by the black square
- * The goal is to make the Blue ball bounce away from the Red ball cursor
+ * Project Overview:
+ * This interactive project focuses on the dynamic relationship between a Blue ball 
+ * (representing the rational Brain) and a Red ball (controlled by the player, representing 
+ * the emotional Heart). The goal of the game is for the Blue ball to continually move within 
+ * a defined boundary while the player (Heart) uses the Red ball to interact with it.
  * 
  * Objectives :
  * Get comfortable with starting, coding, and distributing a simple JavaScript project 
@@ -253,5 +256,3 @@ function checkButtons(){
         }
     }
 }
-
-
