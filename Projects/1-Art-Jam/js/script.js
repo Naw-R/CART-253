@@ -173,8 +173,8 @@ function pushBallAway() {
         ballSpeedX += cos(angle) * 0.2; // Control the push strength horizontally
         ballSpeedY += sin(angle) * 0.2; // Control the push strength vertically
     }
-    
-    IncrementScore();
+
+    IncrementScore(distance);
 
     // Limit the ball's speed to prevent it from becoming too fast
     ballSpeedX = constrain(ballSpeedX, -10, 10);
@@ -252,7 +252,7 @@ function displayScore() {
     text("Score: " + score, 80, 50);  // Display the score at the top left
 }
 
-function IncrementScore(){
+function IncrementScore(distance){
     // Increment score if red ball (mouse) touches the blue ball and enough time has passed
     if (distance < ballSize / 2 + 25 && millis() - lastScoredTime > scoreDelay) {
         score++;  // Increment score
