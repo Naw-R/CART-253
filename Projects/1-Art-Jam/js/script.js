@@ -33,9 +33,18 @@ let isGameStarted = false; // Track whether the game has started
 let lastClickTime = 0; // Track the time of the last valid click
 let clickDelay = 500;  // 500ms delay between clicks
 
+let continueButtonX;
+let skipButtonX;
+let buttonY;
+let buttonWidth = 100;
+let buttonHeight = 40;
+
+
 let score = 0;  // Initialize the score
 let lastScoredTime = 0;  // Track the last time the score was incremented
 let scoreDelay = 1000;   // Delay (in milliseconds) before the score can increase again
+
+
 
 let storyLines = [
     "Welcome to the battle between the Brain and the Heart.",
@@ -57,6 +66,11 @@ function setup() {
     // The margin allows the ball not to be hiddin outside the boundries of the screen
     ballX = random(margin + ballSize, width - margin - ballSize);
     ballY = random(margin + ballSize, height - margin - ballSize);
+
+    // Set the positions for Continue and Skip buttons
+    continueButtonX = width / 2 - buttonWidth - 20;  // Continue button on the left side
+    skipButtonX = width / 2 + 20;  // Skip button on the right side
+    buttonY = height - 100;  // Y position of the buttons (near the bottom of the screen)
 }
 
 /**
@@ -185,20 +199,41 @@ function displayStory() {
     textSize(32);
     text(storyLines[storyStage], width / 2, height / 2);  // Display the current story line
 
-    textSize(24);
-    text("Click to continue", width / 2, height - 100);  // Instruction to proceed
+    // Draw Continue button
+    fill(0);
+    rect(continueButtonX, buttonY, buttonWidth, buttonHeight);
+    fill(255);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text("Continue", continueButtonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
-    // Check if enough time has passed since the last click
-    if (mouseIsPressed && millis() - lastClickTime > clickDelay) {
-        lastClickTime = millis(); // Update the last click time to the current time
+    // Draw Skip button
+    fill(0);
+    rect(skipButtonX, buttonY, buttonWidth, buttonHeight);
+    fill(255);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text("Skip", skipButtonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+
+    // Check if the user clicked the Skip button
+    if (mouseIsPressed && mouseX > skipButtonX && mouseX < skipButtonX + buttonWidth &&
+        mouseY > buttonY && mouseY < buttonY + buttonHeight) {
+        startGame();  // Skip the story and start the game
+    }
+
+    // Check if the user clicked the Continue button
+    if (mouseIsPressed && mouseX > continueButtonX && mouseX < continueButtonX + buttonWidth &&
+        mouseY > buttonY && mouseY < buttonY + buttonHeight && millis() - lastClickTime > clickDelay) {
+        lastClickTime = millis();
 
         if (storyStage < storyLines.length - 1) {
-            storyStage++;  // Go to the next stage of the story
+            storyStage++;
         } else {
-            startGame();  // Start the game once the story ends
+            startGame();  // Start the game when the story is complete
         }
     }
 }
+
 
 // Function to start the game after the story
 function startGame() {
