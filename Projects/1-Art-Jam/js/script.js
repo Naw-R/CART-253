@@ -34,6 +34,8 @@ let lastClickTime = 0; // Track the time of the last valid click
 let clickDelay = 500;  // 500ms delay between clicks
 
 let score = 0;  // Initialize the score
+let lastScoredTime = 0;  // Track the last time the score was incremented
+let scoreDelay = 1000;   // Delay (in milliseconds) before the score can increase again
 
 let storyLines = [
     "Welcome to the battle between the Brain and the Heart.",
@@ -78,7 +80,7 @@ function draw() {
         // Display the score
         fill(0);
         textSize(32);
-        text("Score: " + score, 50, 50);  // Display the score at the top left
+        text("Score: " + score, 80, 50);  // Display the score at the top left
     }
 
 }
@@ -163,9 +165,10 @@ function pushBallAway() {
         ballSpeedY += sin(angle) * 0.2; // Control the push strength vertically
     }
 
-    // Increment score if red ball (mouse) touches the blue ball
-    if (distance < ballSize / 2 + 25) {  // Adjust for ball size and mouse size (50px diameter)
+    // Increment score if red ball (mouse) touches the blue ball and enough time has passed
+    if (distance < ballSize / 2 + 25 && millis() - lastScoredTime > scoreDelay) {
         score++;  // Increment score
+        lastScoredTime = millis();  // Update the last score time
     }
 
     // Limit the ball's speed to prevent it from becoming too fast
