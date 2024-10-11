@@ -1,13 +1,16 @@
 /**
  * Frogfrogfrog
- * Pippin Barr
+ * Base Template Creation by : Pippin Barr
+ * Improved by : Rowan Nasser
  * 
  * A game of catching flies with your frog-tongue
  * 
- * Instructions:
+ * Basic Instructions:
  * - Move the frog with your mouse
  * - Click to launch the tongue
  * - Catch flies
+ * 
+ * Additional Instructions : 
  * 
  * Made with p5
  * https://p5js.org/
