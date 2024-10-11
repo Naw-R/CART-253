@@ -84,6 +84,8 @@ function draw() {
     moveTongue();
     drawFrog();
     checkTongueFlyOverlap();
+
+    displayScore(); // Display the score
 }
 
 /**
@@ -215,15 +217,19 @@ function mousePressed() {
     }
 }
 
+/** 
+ * Increase the score for the game by speeding up the music playback
+*/
 function increaseScore() {
     score++;
-    if (score < 5) {
-        backgroundMusic.rate(1); // Normal speed
-    } else if (score < 10) {
-        backgroundMusic.rate(1.2); // Slightly faster
-    } else {
-        backgroundMusic.rate(1.5); // Fast speed
-    }
+    let rate = map(score, 0, 20, 1, 1.5);   // Improving the use of "map" function
+    backgroundMusic.rate(rate);
 }
 
-
+// New function to display the score on the screen
+function displayScore() {
+    fill(0); // Black text color
+    textSize(24); // Text size
+    textAlign(LEFT, TOP); // Align text to the top left
+    text(`Score: ${score}`, 10, 10); // Display the score at the top-left corner
+}
