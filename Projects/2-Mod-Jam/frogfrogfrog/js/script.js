@@ -26,6 +26,10 @@ let powerupSound;
 
 let score = 0; // Initialize score
 
+// Variables for cloud positions
+let cloudX = [];
+let cloudY = [];
+
 function preload() {
     backgroundMusic = loadSound('assets/sounds/background.mp3');
     frogSound = loadSound('assets/sounds/frog.mp3');
@@ -71,6 +75,12 @@ function setup() {
     // Give the fly its first random position
     resetFly();
 
+    // Initialize cloud positions
+    for (let i = 0; i < 5; i++) {
+        cloudX.push(random(width));
+        cloudY.push(random(50, 150));
+    }
+
     // Play background music --Audio
     backgroundMusic.loop();
     backgroundMusic.setVolume(0.3); // Set initial volume
@@ -78,6 +88,9 @@ function setup() {
 
 function draw() {
     background("#87ceeb");
+    drawClouds(); // Draw the clouds before other elements
+
+
     moveFly();
     drawFly();
     moveFrog();
@@ -266,4 +279,26 @@ function displayScore() {
     textSize(24); // Text size
     textAlign(LEFT, TOP); // Align text to the top left
     text(`Score: ${score}`, 10, 10); // Display the score at the top-left corner
+}
+
+/**
+ * Draws and moves clouds
+ */
+function drawClouds() {
+    fill(220, 220, 220, 200); // Lighter grey with higher transparency
+    stroke(225,225,225,225); // Lighter grey with higher transparency
+
+    for (let i = 0; i < cloudX.length; i++) {
+        // Draw a simple cloud as a single ellipse
+        ellipse(cloudX[i], cloudY[i], 60, 40); // Cloud shape
+
+        // Move the cloud to the left
+        cloudX[i] -= 0.5;
+
+        // If the cloud goes off the screen, reset its position to the right
+        if (cloudX[i] < -50) {
+            cloudX[i] = width + 50;
+            cloudY[i] = random(50, 150); // Reset to a new random height
+        }
+    }
 }

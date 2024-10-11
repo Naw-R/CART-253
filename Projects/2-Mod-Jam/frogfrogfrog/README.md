@@ -18,9 +18,8 @@ Finding surprising ways to change a conventional design through programming spec
 
 Starting with the Frogfrogfrog Project. Add a minimum of a further five (but ideally more) new features to the experience. Examples might include:
 
+Sound Effects (Background sound, Frog sound, Buzzing sound, PowerUps sounds).
 A scoring system.
-New kinds of fly movement.
-Visually bringing the fly back to the frog’s mouth on capture.
-A title, instructions, and ending screen.
-A new control system.
-Visual effects.
+Improved Frog features (Adding eyes and pupils).
+Improved Fly appearance (Wings animation, body, eyes, legs).
+Moving Clouds.
