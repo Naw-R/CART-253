@@ -208,8 +208,18 @@ function drawFrog() {
     fill("#00ff00");
     noStroke();
     ellipse(frog.body.x, frog.body.y, frog.body.size);
+
+    // Draw the eyes relative to the frog's body position
+    fill(255); // White for the eye base
+    ellipse(frog.body.x - 30, frog.body.y - 60, 30, 40); // Left eye
+    ellipse(frog.body.x + 30, frog.body.y - 60, 30, 40); // Right eye
+
+    fill(0); // Black for the pupils
+    ellipse(frog.body.x - 30, frog.body.y - 60, 10, 20); // Left pupil
+    ellipse(frog.body.x + 30, frog.body.y - 60, 10, 20); // Right pupil
     pop();
 }
+
 
 /**
  * Handles the tongue overlapping the fly
