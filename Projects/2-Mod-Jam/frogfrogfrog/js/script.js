@@ -18,6 +18,22 @@
 
 "use strict";
 
+// Additional Tools for Improving Production
+let backgroundMusic;
+let frogSound;
+let buzzSound;
+let powerupSound;
+
+let score = 0; // Initialize score
+
+function preload() {
+    backgroundMusic = loadSound('background.mp3');
+    frogSound = loadSound('frog.mp3');
+    buzzSound = loadSound('buzz.mp3');
+    powerupSound = loadSound('powerup.mp3');
+}
+
+
 // Our frog
 const frog = {
     // The frog's body has a position and size
@@ -54,6 +70,10 @@ function setup() {
 
     // Give the fly its first random position
     resetFly();
+
+    // Play background music --Audio
+    backgroundMusic.loop();
+    backgroundMusic.setVolume(0.3); // Set initial volume
 }
 
 function draw() {
@@ -83,9 +103,20 @@ function moveFly() {
  * Draws the fly as a black circle
  */
 function drawFly() {
+    let distance = dist(frog.body.x, frog.body.y, fly.x, fly.y);
+    let volume = map(distance, 0, width, 1, 0); // Volume decreases as the fly gets closer
+    buzzSound.setVolume(volume);
+    if (!buzzSound.isPlaying()) {
+        buzzSound.loop();
+    }
+
     push();
     noStroke();
-    fill("#000000");
+    if (timeOfDay > 128) {
+        fill(0, 255, 0, 150); // Glowing green at night
+    } else {
+        fill(0); // Black during the day
+    }
     ellipse(fly.x, fly.y, fly.size);
     pop();
 }
@@ -172,6 +203,9 @@ function checkTongueFlyOverlap() {
         resetFly();
         // Bring back the tongue
         frog.tongue.state = "inbound";
+
+        increaseScore();
+        powerupSound.play(); // Play sound effect for catching a fly
     }
 }
 
@@ -179,7 +213,22 @@ function checkTongueFlyOverlap() {
  * Launch the tongue on click (if it's not launched yet)
  */
 function mousePressed() {
+    //Additional action to function to make audio play
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
+        frogSound.play(); // Play frog sound when tongue launches
     }
 }
+
+function increaseScore() {
+    score++;
+    if (score < 5) {
+        backgroundMusic.rate(1); // Normal speed
+    } else if (score < 10) {
+        backgroundMusic.rate(1.2); // Slightly faster
+    } else {
+        backgroundMusic.rate(1.5); // Fast speed
+    }
+}
+
+
