@@ -27,10 +27,10 @@ let powerupSound;
 let score = 0; // Initialize score
 
 function preload() {
-    backgroundMusic = loadSound('background.mp3');
-    frogSound = loadSound('frog.mp3');
-    buzzSound = loadSound('buzz.mp3');
-    powerupSound = loadSound('powerup.mp3');
+    backgroundMusic = loadSound('assets/sounds/background.mp3');
+    frogSound = loadSound('assets/sounds/frog.mp3');
+    buzzSound = loadSound('assets/sounds/buzz.mp3');
+    powerupSound = loadSound('assets/sounds/powerup.mp3');
 }
 
 
@@ -109,14 +109,9 @@ function drawFly() {
     if (!buzzSound.isPlaying()) {
         buzzSound.loop();
     }
-
     push();
     noStroke();
-    if (timeOfDay > 128) {
-        fill(0, 255, 0, 150); // Glowing green at night
-    } else {
-        fill(0); // Black during the day
-    }
+    fill("#000000");
     ellipse(fly.x, fly.y, fly.size);
     pop();
 }
@@ -197,7 +192,7 @@ function checkTongueFlyOverlap() {
     // Get distance from tongue to fly
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
     // Check if it's an overlap
-    const eaten = (d < frog.tongue.size/2 + fly.size/2);
+    const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
     if (eaten) {
         // Reset the fly
         resetFly();
