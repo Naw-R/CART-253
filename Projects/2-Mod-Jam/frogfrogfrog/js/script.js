@@ -27,7 +27,7 @@ let powerupSound;
 let score = 0; // Initialize score
 
 function preload() {
-    backgroundMusic = loadSound('assets/sounds/background.mp3');
+    backgroundMusic = loadSound('assets/sounds/Background.mp3');
     frogSound = loadSound('assets/sounds/frog.mp3');
     buzzSound = loadSound('assets/sounds/buzz.mp3');
     powerupSound = loadSound('assets/sounds/powerup.mp3');
