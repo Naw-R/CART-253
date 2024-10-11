@@ -27,7 +27,7 @@ let powerupSound;
 let score = 0; // Initialize score
 
 function preload() {
-    backgroundMusic = loadSound('assets/sounds/Background.mp3');
+    backgroundMusic = loadSound('assets/sounds/background.mp3');
     frogSound = loadSound('assets/sounds/frog.mp3');
     buzzSound = loadSound('assets/sounds/buzz.mp3');
     powerupSound = loadSound('assets/sounds/powerup.mp3');
@@ -112,9 +112,33 @@ function drawFly() {
         buzzSound.loop();
     }
     push();
-    noStroke();
-    fill("#000000");
-    ellipse(fly.x, fly.y, fly.size);
+    translate(fly.x, fly.y); // Move the origin to the fly's position
+
+    // Animate wings with slight movement
+    let wingOffset = sin(frameCount * 0.2) * 2; // Oscillate the wings
+
+    // Draw the wings
+    fill(200, 200, 255, 150); // Light blue with transparency for wings
+    stroke(180, 180, 180, 200); // Gray stroke for contrast
+    strokeWeight(1);
+    ellipse(-10, -5 + wingOffset, 20, 10); // Left wing
+    ellipse(10, -5 - wingOffset, 20, 10); // Right wing
+
+    // Draw the body
+    fill(0); // Black for the body
+    ellipse(0, 0, fly.size, fly.size * 1.5); // Body of the fly
+
+    // Draw the eyes
+    fill(255, 0, 0); // Red for the eyes
+    ellipse(-5, -fly.size / 2, 5, 5); // Left eye
+    ellipse(5, -fly.size / 2, 5, 5); // Right eye
+
+    // Draw the legs
+    stroke(0); // Black for legs
+    strokeWeight(1);
+    line(-5, 5, -10, 10); // Left leg
+    line(5, 5, 10, 10); // Right leg
+
     pop();
 }
 
