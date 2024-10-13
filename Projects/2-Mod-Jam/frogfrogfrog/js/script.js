@@ -167,7 +167,8 @@ function resetFly() {
  * Moves the frog to the mouse position on x
  */
 function moveFrog() {
-    frog.body.x = mouseX;
+    // Use map() to constrain the frog within the canvas
+    frog.body.x = map(mouseX, 0, width, frog.body.size / 2, width - frog.body.size / 2, true);
 }
 
 /**
