@@ -1,3 +1,4 @@
+// This is in script.js
 /**
  * Frogfrogfrog
  * Base Template Creation by : Pippin Barr
@@ -18,25 +19,9 @@
 
 "use strict";
 
-// Additional Tools for Improving Production
-let backgroundMusic;
-let frogSound;
-let buzzSound;
-let powerupSound;
-
-let score = 0; // Initialize score
-
-// Variables for cloud positions
-let cloudX = [];
-let cloudY = [];
-
 function preload() {
-    backgroundMusic = loadSound('assets/sounds/background.mp3');
-    frogSound = loadSound('assets/sounds/frog.mp3');
-    buzzSound = loadSound('assets/sounds/buzz.mp3');
-    powerupSound = loadSound('assets/sounds/powerup.mp3');
+    preloadAudio(); // Call from audio.js to load sounds
 }
-
 
 // Our frog
 const frog = {
@@ -75,21 +60,18 @@ function setup() {
     // Give the fly its first random position
     resetFly();
 
-    // Initialize cloud positions
-    for (let i = 0; i < 5; i++) {
-        cloudX.push(random(width));
-        cloudY.push(random(50, 150));
-    }
+    // Load audio assets and initialize the audio
+    playBackgroundMusic(); // Call from audio.js
 
-    // Play background music --Audio
-    backgroundMusic.loop();
-    backgroundMusic.setVolume(0.3); // Set initial volume
+    // Initialize cloud positions
+    initializeClouds(); // Call from cloud.js
+
 }
 
 function draw() {
     background("#87ceeb");
+    
     drawClouds(); // Draw the clouds before other elements
-
 
     moveFly();
     drawFly();
@@ -98,7 +80,7 @@ function draw() {
     drawFrog();
     checkTongueFlyOverlap();
 
-    displayScore(); // Display the score
+    displayScore(); // Call displayScore() from score.js
 }
 
 /**
@@ -115,15 +97,14 @@ function moveFly() {
 }
 
 /**
- * Draws the fly as a black circle
+ * Draws the fly as a black circle 
+ * Added wings and eyes and body and legs 
+ * to give better looking bugs
  */
 function drawFly() {
     let distance = dist(frog.body.x, frog.body.y, fly.x, fly.y);
-    let volume = map(distance, 0, width, 1, 0); // Volume decreases as the fly gets closer
-    buzzSound.setVolume(volume);
-    if (!buzzSound.isPlaying()) {
-        buzzSound.loop();
-    }
+    updateBuzzSound(distance); // Call from audio.js
+
     push();
     translate(fly.x, fly.y); // Move the origin to the fly's position
 
@@ -165,6 +146,8 @@ function resetFly() {
 
 /**
  * Moves the frog to the mouse position on x
+ * Changed to make it only visible in the canvas 
+ * even when mouse is outside of the dedicated canvas in setup
  */
 function moveFrog() {
     // Use map() to constrain the frog within the canvas
@@ -201,6 +184,7 @@ function moveTongue() {
 
 /**
  * Displays the tongue (tip and line connection) and the frog (body)
+ * Added eyes to the frog
  */
 function drawFrog() {
     // Draw the tongue tip
@@ -250,7 +234,7 @@ function checkTongueFlyOverlap() {
         frog.tongue.state = "inbound";
 
         increaseScore();
-        powerupSound.play(); // Play sound effect for catching a fly
+        powerupSound.play(); // play sound from audio.js
     }
 }
 
@@ -262,44 +246,5 @@ function mousePressed() {
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
         frogSound.play(); // Play frog sound when tongue launches
-    }
-}
-
-/** 
- * Increase the score for the game by speeding up the music playback
-*/
-function increaseScore() {
-    score++;
-    let rate = map(score, 0, 20, 1, 1.5);   // Improving the use of "map" function
-    backgroundMusic.rate(rate);
-}
-
-// New function to display the score on the screen
-function displayScore() {
-    fill(0); // Black text color
-    textSize(24); // Text size
-    textAlign(LEFT, TOP); // Align text to the top left
-    text(`Score: ${score}`, 10, 10); // Display the score at the top-left corner
-}
-
-/**
- * Draws and moves clouds
- */
-function drawClouds() {
-    fill(220, 220, 220, 200); // Lighter grey with higher transparency
-    stroke(225,225,225,225); // Lighter grey with higher transparency
-
-    for (let i = 0; i < cloudX.length; i++) {
-        // Draw a simple cloud as a single ellipse
-        ellipse(cloudX[i], cloudY[i], 60, 40); // Cloud shape
-
-        // Move the cloud to the left
-        cloudX[i] -= 0.5;
-
-        // If the cloud goes off the screen, reset its position to the right
-        if (cloudX[i] < -50) {
-            cloudX[i] = width + 50;
-            cloudY[i] = random(50, 150); // Reset to a new random height
-        }
     }
 }
