@@ -30,6 +30,11 @@ let score = 0; // Initialize score
 let cloudX = [];
 let cloudY = [];
 
+// Variables for challenges
+let challengeComplete = false;
+const flyGoal = 10; // Goal: Catch 10 flies
+
+
 function preload() {
     backgroundMusic = loadSound('assets/sounds/background.mp3');
     frogSound = loadSound('assets/sounds/frog.mp3');
@@ -99,6 +104,10 @@ function draw() {
     checkTongueFlyOverlap();
 
     displayScore(); // Display the score
+
+    displayProgress(); // Display progress toward the goal
+
+    if (challengeComplete) displayCompletionMessage(); // Show message when complete
 }
 
 /**
@@ -270,7 +279,8 @@ function mousePressed() {
 */
 function increaseScore() {
     score++;
-    let rate = map(score, 0, 20, 1, 1.5);   // Improving the use of "map" function
+    if (score >= flyGoal) challengeComplete = true;
+    let rate = map(score, 0, 20, 1, 1.5); // Adjust music speed
     backgroundMusic.rate(rate);
 }
 
@@ -281,6 +291,22 @@ function displayScore() {
     textAlign(LEFT, TOP); // Align text to the top left
     text(`Score: ${score}`, 10, 10); // Display the score at the top-left corner
 }
+
+// Display the progress toward the goal
+function displayProgress() {
+    fill(0);
+    textSize(18);
+    text(`Catch ${flyGoal} flies to complete the level!`, 10, 40);
+}
+
+// Display a message when the challenge is completed
+function displayCompletionMessage() {
+    fill(255, 0, 0);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("Level Complete!", width / 2, height / 2);
+}
+
 
 /**
  * Draws and moves clouds
