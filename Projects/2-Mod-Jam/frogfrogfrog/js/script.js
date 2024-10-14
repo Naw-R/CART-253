@@ -19,6 +19,7 @@
 
 "use strict";
 
+
 function preload() {
     preloadAudio(); // Call from audio.js to load sounds
 }
@@ -66,6 +67,16 @@ function setup() {
     // Initialize cloud positions
     initializeClouds(); // Call from cloud.js
 
+    // Initialize timer
+    startTimer(); // Start the timer
+
+    // Start the game with a 3-second intro
+    setTimeout(() => {
+        gameState = "playing";
+        startTimer(); // Start timer only when game begins
+    }, 3000);
+
+
 }
 
 function draw() {
@@ -73,14 +84,26 @@ function draw() {
     
     drawClouds(); // Draw the clouds before other elements
 
-    moveFly();
-    drawFly();
-    moveFrog();
-    moveTongue();
-    drawFrog();
-    checkTongueFlyOverlap();
+    // Update the game state on each frame
+    updateGameState(); // Ensure the state transitions work
 
-    displayScore(); // Call displayScore() from score.js
+    // Update game state based on timer and score
+    if (gameState === "intro") {
+        displayIntro(); // From storyline.js
+    } else if (gameState === "playing") {
+        moveFly();
+        drawFly();
+        moveFrog();
+        moveTongue();
+        drawFrog();
+        checkTongueFlyOverlap();
+        displayScore(); // From score.js
+        displayTimer(); // From timer.js
+    } else if (gameState === "win") {
+        displayWin(); // From storyline.js
+    } else if (gameState === "lose") {
+        displayLose(); // From storyline.js
+    }
 }
 
 /**
@@ -225,16 +248,14 @@ function drawFrog() {
 function checkTongueFlyOverlap() {
     // Get distance from tongue to fly
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
-    // Check if it's an overlap
-    const eaten = (d < frog.tongue.size / 2 + fly.size / 2);
-    if (eaten) {
-        // Reset the fly
+    
+    // Check overlap between the frog and fly
+    if (d < frog.tongue.size / 2 + fly.size / 2) {
         resetFly();
-        // Bring back the tongue
         frog.tongue.state = "inbound";
-
         increaseScore();
-        powerupSound.play(); // play sound from audio.js
+        increaseDifficulty(); // From difficulty.js
+        powerupSound.play(); // From audio.js
     }
 }
 
