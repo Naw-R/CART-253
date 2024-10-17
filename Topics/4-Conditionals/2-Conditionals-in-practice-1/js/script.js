@@ -48,7 +48,21 @@ function draw() {
  * Responds to user input
  */
 function checkInput() {
-    // We'll need to figure this out
+    // Check if the mouse button is pressed
+    if (mouseIsPressed) {
+        // turns the circle to happy color
+        creature.fill = creature.fills.happy;
+    }
+    // Check if a key is pressed
+    else if (keyIsPressed) {
+        // turns the circle to angry color
+        creature.fill = creature.fills.angry;
+    }
+    // If the mouse button is not pressed
+    else {
+        // turns the circle to bored color
+        creature.fill = creature.fills.bored;
+    }
 }
 
 /**
