@@ -24,4 +24,5 @@ Starting with the Frogfrogfrog Project, the following features were added:
 - **Timer:** A 40-second countdown adds urgency to the gameplay.
 - **Difficulty Adjustment:** Fly speed increases every 3 flies to increase challenge.
 - **Moving Clouds:** Animated clouds in the background for visual appeal.
-
+- **Keyboard Controls:** Frog movement with arrow keys and A/D keys; tongue launch with the spacebar.
+- **Mouse Control Tracking:** Added logic to track recent mouse movement for smoother interaction.
