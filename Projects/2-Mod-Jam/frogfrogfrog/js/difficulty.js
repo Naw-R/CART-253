@@ -6,5 +6,5 @@
  */
 
 function increaseDifficulty() {
-    if (score % 3 === 0) fly.speed += 1; // Increase fly speed every 5 flies
+    if (score % 3 === 0) fly.speed += 1; // Increase fly speed every 3 flies
 }
