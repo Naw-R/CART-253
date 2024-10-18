@@ -19,6 +19,6 @@ function displayScore() {
     fill(0); // Black text color
     textSize(24); // Set text size
     textAlign(LEFT, TOP); // Align text to the top-left corner
-    text(`Score: ${score}`, 10, 10); // Display the score
+    text(`Score: ${score}/${scorelevel}`, 10, 10); // Display the score
 }
 

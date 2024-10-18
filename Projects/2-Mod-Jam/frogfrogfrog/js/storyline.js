@@ -1,5 +1,6 @@
 // this is storyline.js
 let gameState = "intro"; // States: intro, playing, win, lose
+let scorelevel = 10;
 
 function displayIntro() {
     background(255); // Ensure a white background clears the canvas
@@ -16,6 +17,7 @@ function displayIntro() {
 function displayWin() {
     textSize(32);
     textAlign(CENTER, CENTER);
+    fill(0); // Black text color
     text("Frodo feasts like a king!", width / 2, height / 2);
     text("You Win!", width / 2, height / 2 + 40);
     noLoop();
@@ -24,6 +26,7 @@ function displayWin() {
 function displayLose() {
     textSize(32);
     textAlign(CENTER, CENTER);
+    fill(0); // Black text color
     text("Time's up! Frodo's feast is over.", width / 2, height / 2);
     text("You Lost!", width / 2, height / 2 + 40);
     noLoop();
@@ -35,7 +38,7 @@ function updateGameState() {
         noLoop(); // Stop draw loop
         return;
     }
-    if (score >= 10) {
+    if (score >= scorelevel) {
         gameState = "win";
         noLoop(); // Stop draw loop
         return;
