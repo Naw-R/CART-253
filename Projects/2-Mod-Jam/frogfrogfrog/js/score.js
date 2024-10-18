@@ -1,4 +1,11 @@
-//This is in score.js
+/*
+ * Score Management
+ *
+ * Tracks the player’s score and adjusts the background music speed 
+ * as the score increases. The score is displayed in the top-left corner 
+ * to show progress toward the goal of catching 10 flies.
+ */
+
 
 // Initialize score
 let score = 0;

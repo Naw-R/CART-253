@@ -1,4 +1,11 @@
-//this is timer.js
+/*
+ * Timer Logic to Control Game Duration
+ *
+ * This code starts a 40-second countdown and makes sure the timer only runs once, 
+ * preventing it from restarting if the player clicks multiple times. The timer decreases 
+ * by 1 second every 1000 milliseconds and stops when the game ends or time runs out.
+ */
+
 
 let timer = 40; // 40-second countdown
 let timerStarted = false; // Flag to prevent multiple timers

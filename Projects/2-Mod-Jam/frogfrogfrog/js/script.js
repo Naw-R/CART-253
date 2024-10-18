@@ -19,7 +19,7 @@
 
 "use strict";
 
-
+// Initial configuration of the audio player
 function preload() {
     preloadAudio(); // Call from audio.js to load sounds
 }
@@ -53,7 +53,7 @@ const fly = {
 };
 
 /**
- * Creates the canvas and initializes the fly
+ *  Initial state of the canvas, fly, audio, clouds and timer
  */
 function setup() {
     createCanvas(640, 480);
@@ -79,6 +79,9 @@ function setup() {
 
 }
 
+/**
+ * Draw the game state
+ */
 function draw() {
     background("#87ceeb");
     

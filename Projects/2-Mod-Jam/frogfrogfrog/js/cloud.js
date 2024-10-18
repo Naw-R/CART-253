@@ -1,3 +1,11 @@
+/*
+ * Cloud Animation
+ *
+ * Initializes cloud positions and draws them on the screen. 
+ * Clouds move from right to left, resetting to the right side 
+ * when they exit the screen to create a continuous scrolling effect.
+ */
+
 // Variables for cloud positions
 let cloudX = [];
 let cloudY = [];

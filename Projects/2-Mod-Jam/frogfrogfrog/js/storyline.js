@@ -1,7 +1,18 @@
-// this is storyline.js
+/*
+ * Game State Logic
+ *
+ * Manages different game states: "intro", "playing", "win", and "lose". 
+ * The goal is to catch 10 flies before time runs out. This code handles 
+ * displaying the intro, win, and loss messages and updates the game state 
+ * based on the timer or the player's score.
+ */
+
 let gameState = "intro"; // States: intro, playing, win, lose
 let scorelevel = 10;
 
+/**
+ * Display the intro of the game
+ */
 function displayIntro() {
     background(255); // Ensure a white background clears the canvas
     textSize(24);
@@ -14,6 +25,9 @@ function displayIntro() {
     text("Click to Start", width / 2, height / 2 + 80); // Prompt user to start
 }
 
+/**
+ * Display the win of the game
+ */
 function displayWin() {
     textSize(32);
     textAlign(CENTER, CENTER);
@@ -23,6 +37,9 @@ function displayWin() {
     noLoop();
 }
 
+/**
+ * Display the loss of the game
+ */
 function displayLose() {
     textSize(32);
     textAlign(CENTER, CENTER);
@@ -32,12 +49,18 @@ function displayLose() {
     noLoop();
 }
 
+/**
+ * Sets the win or lose state
+ * @returns 
+ */
 function updateGameState() {
+    // if timer ran out
     if (timer <= 0) {
         gameState = "lose";
         noLoop(); // Stop draw loop
         return;
     }
+    // if user succeeded to catch all flies
     if (score >= scorelevel) {
         gameState = "win";
         noLoop(); // Stop draw loop

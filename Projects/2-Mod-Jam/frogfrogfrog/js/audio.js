@@ -1,3 +1,11 @@
+/*
+ * Audio Management
+ *
+ * Preloads all game sound assets and controls their playback. 
+ * The background music plays in a loop with adjusted volume, and 
+ * the buzz sound’s volume changes based on the distance to the player.
+ */
+
 // Audio Variables
 let backgroundMusic;
 let frogSound;
