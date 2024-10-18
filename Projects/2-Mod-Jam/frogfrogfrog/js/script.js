@@ -263,6 +263,11 @@ function checkTongueFlyOverlap() {
  * Launch the tongue on click (if it's not launched yet)
  */
 function mousePressed() {
+    if (gameState === "intro") {
+        gameState = "playing"; // Start the game
+        startTimer(); // Initialize the timer
+        return; // Exit early to avoid triggering other interactions
+    }
     //Additional action to function to make audio play
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
