@@ -19,6 +19,16 @@
 
 "use strict";
 
+let mouseMovedRecently = false; // Track if the mouse moved recently
+
+/**
+ * Detect mouse movement to set the flag.
+ */
+function mouseMoved() {
+    mouseMovedRecently = true; // Mouse has moved
+}
+
+
 // Initial configuration of the audio player
 function preload() {
     preloadAudio(); // Call from audio.js to load sounds
@@ -40,7 +50,7 @@ const frog = {
         speed: 20,
         // Determines how the tongue moves each frame
         state: "idle" // State can be: idle, outbound, inbound
-    }
+    },
 };
 
 // Our fly
@@ -84,7 +94,7 @@ function setup() {
  */
 function draw() {
     background("#87ceeb");
-    
+
     drawClouds(); // Draw the clouds before other elements
 
     // Update the game state on each frame
@@ -176,8 +186,25 @@ function resetFly() {
  * even when mouse is outside of the dedicated canvas in setup
  */
 function moveFrog() {
-    // Use map() to constrain the frog within the canvas
-    frog.body.x = map(mouseX, 0, width, frog.body.size / 2, width - frog.body.size / 2, true);
+    const speed = 5; // Set movement speed
+
+    // Handle keyboard movement (Arrow keys or A/D keys)
+    if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) { // 65 is 'A'
+        frog.body.x -= speed; // Move left
+        mouseMovedRecently = false; // Disable mouse control
+    }
+    if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) { // 68 is 'D'
+        frog.body.x += speed; // Move right
+        mouseMovedRecently = false; // Disable mouse control
+    }
+
+    // Handle mouse movement only if the mouse moved recently
+    if (mouseMovedRecently && mouseX >= 0 && mouseX <= width) {
+        frog.body.x = map(mouseX, 0, width, frog.body.size / 2, width - frog.body.size / 2);
+    }
+
+    // Keep the frog within the canvas boundaries horizontally
+    frog.body.x = constrain(frog.body.x, frog.body.size / 2, width - frog.body.size / 2);
 }
 
 /**
@@ -251,7 +278,7 @@ function drawFrog() {
 function checkTongueFlyOverlap() {
     // Get distance from tongue to fly
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
-    
+
     // Check overlap between the frog and fly
     if (d < frog.tongue.size / 2 + fly.size / 2) {
         resetFly();
@@ -274,6 +301,16 @@ function mousePressed() {
     //Additional action to function to make audio play
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
+        frogSound.play(); // Play frog sound when tongue launches
+    }
+}
+
+/**
+ * Launch the tongue when the player presses the spacebar or clicks the mouse.
+ */
+function keyPressed() {
+    if (keyCode === 32 && frog.tongue.state === "idle") { // 32 is Spacebar
+        frog.tongue.state = "outbound"; // Launch the tongue
         frogSound.play(); // Play frog sound when tongue launches
     }
 }
