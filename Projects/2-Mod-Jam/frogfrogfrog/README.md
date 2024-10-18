@@ -26,3 +26,4 @@ Starting with the Frogfrogfrog Project, the following features were added:
 - **Moving Clouds:** Animated clouds in the background for visual appeal.
 - **Keyboard Controls:** Frog movement with arrow keys and A/D keys; tongue launch with the spacebar.
 - **Mouse Control Tracking:** Added logic to track recent mouse movement for smoother interaction.
+- **Particles System:** Created a particle explosion effect when a fly is caught to enhance visual feedback.

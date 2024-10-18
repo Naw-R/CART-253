@@ -21,6 +21,8 @@
 
 let mouseMovedRecently = false; // Track if the mouse moved recently
 
+let particles = [];
+
 /**
  * Detect mouse movement to set the flag.
  */
@@ -109,6 +111,8 @@ function draw() {
         moveFrog();
         moveTongue();
         drawFrog();
+        updateParticles(); // Update particle positions
+        drawParticles(); // Draw particles on the screen
         checkTongueFlyOverlap();
         displayScore(); // From score.js
         displayTimer(); // From timer.js
@@ -276,15 +280,25 @@ function drawFrog() {
  * Handles the tongue overlapping the fly
  */
 function checkTongueFlyOverlap() {
-    // Get distance from tongue to fly
+    // Calculate the distance between the tongue and the fly
     const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
 
-    // Check overlap between the frog and fly
+    // If the tongue touches the fly, trigger actions
     if (d < frog.tongue.size / 2 + fly.size / 2) {
+        // Create particle explosion at the fly's location
+        createParticles(fly.x, fly.y);
+
+        // Reset the fly to a new position
         resetFly();
+
+        // Set the tongue to retract (inbound state)
         frog.tongue.state = "inbound";
+
+        // Increase the score and adjust difficulty
         increaseScore();
         increaseDifficulty(); // From difficulty.js
+
+        // Play sound effect for catching the fly
         powerupSound.play(); // From audio.js
     }
 }
@@ -312,5 +326,53 @@ function keyPressed() {
     if (keyCode === 32 && frog.tongue.state === "idle") { // 32 is Spacebar
         frog.tongue.state = "outbound"; // Launch the tongue
         frogSound.play(); // Play frog sound when tongue launches
+    }
+}
+
+/**
+ * Updates the particles' positions and lifespans.
+ * Moves each particle based on its velocity (vx, vy).
+ * Gradually reduces the lifespan of each particle.
+ * Removes particles from the array when their lifespan reaches zero.
+ */
+function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) { 
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.lifespan--;
+
+        // Remove the particle if its lifespan is over
+        if (p.lifespan <= 0) {
+            particles.splice(i, 1);
+        }
+    }
+}
+
+/**
+ * Draws particles as small yellow circles with a fading effect.
+ * Each particle's opacity decreases based on its remaining lifespan.
+ * Particles are drawn at their current position with no outline.
+ */
+function drawParticles() {
+    particles.forEach(p => {
+        fill(255, 255, 0, p.lifespan * 4); // Yellow particles with fading effect
+        noStroke();
+        ellipse(p.x, p.y, 5); // Draw each particle as a small circle
+    });
+}
+
+/**
+ * Creates particles at a given position to simulate an explosion.
+ */
+function createParticles(x, y) {
+    for (let i = 0; i < 10; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: random(-2, 2), // Random horizontal velocity
+            vy: random(-2, 2), // Random vertical velocity
+            lifespan: 60 // Particle lifespan in frames
+        });
     }
 }
