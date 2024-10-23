@@ -25,6 +25,7 @@ function preloadAudio() {
     frogSound = loadSound('assets/sounds/frog.mp3');
     buzzSound = loadSound('assets/sounds/buzz.mp3');
     powerupSound = loadSound('assets/sounds/powerup.mp3');
+    powerdownSound = loadSound('assets/sounds/powerdown.mp3');
 }
 
 /**

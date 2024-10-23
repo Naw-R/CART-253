@@ -25,12 +25,12 @@
  * Functions included:
  * - setup(); – Initializes the canvas, audio, and game elements.
  * - draw(); – The game loop that renders elements based on the current state.
- * - moveFly(); – Moves the fly and resets it if it leaves the screen.
- * - drawFly(); – Draws a detailed fly with wings, eyes, and legs.
+ * - moveGoodFly(); – Moves the Good fly and resets it if it leaves the screen.
+ * - drawGoodFly(); – Draws a detailed Good fly with wings, eyes, and legs.
  * - moveFrog(); – Controls frog movement based on mouse and keyboard input.
  * - moveTongue(); – Controls the tongue’s movement and state (idle, outbound, inbound).
  * - drawFrog(); – Draws the frog with body, eyes, and tongue.
- * - checkTongueFlyOverlap(); – Checks if the tongue catches a fly and triggers effects.
+ * - checkTongueFlyOverlap(); – Checks if the tongue catches a Good fly and triggers effects.
  * - mousePressed(); – Launches the tongue when the player clicks.
  * - keyPressed(); – Launches the tongue when the player presses Spacebar or W/Up Arrow.
  * - updateParticles(); – Updates the particle positions and lifespans.
@@ -76,13 +76,22 @@ const frog = {
     },
 };
 
-// Our fly
+// Our Good fly
 // Has a position, size, and speed of horizontal movement
-const fly = {
+const goodFly = {
     x: 0,
     y: 200, // Will be random
     size: 10,
     speed: 3
+};
+
+// Our Bad fly
+// Has a position, size, and speed of horizontal movement
+const badFly = {
+    x: 0,
+    y: 200, // Will be random
+    size: 10,
+    speed: 2
 };
 
 /**
@@ -92,7 +101,10 @@ function setup() {
     createCanvas(640, 480);
 
     // Give the fly its first random position
-    resetFly();
+    resetGoodFly();
+
+    // Give the bad fly its first random position
+    resetBadFly();
 
     // Load audio assets and initialize the audio
     playBackgroundMusic(); // Call from audio.js
@@ -121,8 +133,10 @@ function draw() {
     } else if (gameState === "instructions") {
         displayInstructions(); // From storyline
     } else if (gameState === "playing") {
-        moveFly();
-        drawFly();
+        moveGoodFly();
+        moveBadFly();
+        drawGoodFly();
+        drawBadFly();
         moveFrog();
         moveTongue();
         drawFrog();
@@ -144,26 +158,39 @@ function draw() {
  * Moves the fly according to its speed
  * Resets the fly if it gets all the way to the right
  */
-function moveFly() {
+function moveGoodFly() {
     // Move the fly
-    fly.x += fly.speed;
-    // Handle the fly going off the canvas
-    if (fly.x > width) {
-        resetFly();
+    goodFly.x += goodFly.speed;
+    // Handle the Good fly going off the canvas
+    if (goodFly.x > width) {
+        resetGoodFly();
     }
 }
 
 /**
- * Draws the fly as a black circle 
+ * Moves the fly according to its speed
+ * Resets the fly if it gets all the way to the right
+ */
+function moveBadFly() {
+    // Move the fly
+    badFly.x += badFly.speed;
+    // Handle the Bad fly going off the canvas
+    if (badFly.x > width) {
+        resetBadFly();
+    }
+}
+
+/**
+ * Draws the Good fly as a black circle 
  * Added wings and eyes and body and legs 
  * to give better looking bugs
  */
-function drawFly() {
-    let distance = dist(frog.body.x, frog.body.y, fly.x, fly.y);
+function drawGoodFly() {
+    let distance = dist(frog.body.x, frog.body.y, goodFly.x, goodFly.y);
     updateBuzzSound(distance); // Call from audio.js
 
     push();
-    translate(fly.x, fly.y); // Move the origin to the fly's position
+    translate(goodFly.x, goodFly.y); // Move the origin to the Good fly's position
 
     // Animate wings with slight movement
     let wingOffset = sin(frameCount * 0.2) * 2; // Oscillate the wings
@@ -177,12 +204,12 @@ function drawFly() {
 
     // Draw the body
     fill(0); // Black for the body
-    ellipse(0, 0, fly.size, fly.size * 1.5); // Body of the fly
+    ellipse(0, 0, goodFly.size, goodFly.size * 1.5); // Body of the good fly
 
     // Draw the eyes
     fill(255, 0, 0); // Red for the eyes
-    ellipse(-5, -fly.size / 2, 5, 5); // Left eye
-    ellipse(5, -fly.size / 2, 5, 5); // Right eye
+    ellipse(-5, -goodFly.size / 2, 5, 5); // Left eye
+    ellipse(5, -goodFly.size / 2, 5, 5); // Right eye
 
     // Draw the legs
     stroke(0); // Black for legs
@@ -194,11 +221,60 @@ function drawFly() {
 }
 
 /**
+ * Draws the Bad fly as a black circle 
+ * Added wings and eyes and body and legs 
+ * to give better looking bugs
+ */
+function drawBadFly() {
+    let distance = dist(frog.body.x, frog.body.y, badFly.x, badFly.y);
+    updateBuzzSound(distance); // Call from audio.js
+
+    push();
+    translate(badFly.x, badFly.y); // Move the origin to the Bad-Fly's position
+
+    // Animate wings with slight movement
+    let wingOffset = sin(frameCount * 0.2) * 2; // Oscillate the wings
+
+    // Draw the wings (slightly larger than Good-Fly)
+    fill(200, 200, 255, 150); // Light blue with transparency for wings
+    stroke(180, 180, 180, 200); // Gray stroke for contrast
+    strokeWeight(1);
+    ellipse(-15, -7 + wingOffset, 25, 12); // Left wing
+    ellipse(15, -7 - wingOffset, 25, 12); // Right wing
+
+    // Draw the body (increase size for Bad-Fly)
+    fill(255, 0, 0); // Red for the body
+    ellipse(0, 0, badFly.size + 5, (badFly.size + 5) * 1.5); // Larger body
+
+    // Draw the eyes (larger size to match the bigger body)
+    fill(0); // Black for the eyes
+    ellipse(-6, -(badFly.size + 5) / 2, 6, 6); // Left eye
+    ellipse(6, -(badFly.size + 5) / 2, 6, 6); // Right eye
+
+    // Draw the legs (adjusted position and size)
+    stroke(0); // Black for legs
+    strokeWeight(1);
+    line(-6, 7, -12, 12); // Left leg
+    line(6, 7, 12, 12); // Right leg
+
+    pop();
+
+}
+
+/**
  * Resets the fly to the left with a random y
  */
-function resetFly() {
-    fly.x = 0;
-    fly.y = random(0, 300);
+function resetGoodFly() {
+    goodFly.x = 0;
+    goodFly.y = random(0, 300);
+}
+
+/**
+ * Resets the bad fly to the left with a random y
+ */
+function resetBadFly() {
+    badFly.x = 0;
+    badFly.y = random(0, 300);
 }
 
 /**
@@ -297,16 +373,18 @@ function drawFrog() {
  * Handles the tongue overlapping the fly
  */
 function checkTongueFlyOverlap() {
-    // Calculate the distance between the tongue and the fly
-    const d = dist(frog.tongue.x, frog.tongue.y, fly.x, fly.y);
+    // Calculate the distance between the tongue and the Good fly
+    const d = dist(frog.tongue.x, frog.tongue.y, goodFly.x, goodFly.y);
+    // Calculate the distance between the tongue and the Bad fly
+    const b = dist(frog.tongue.x, frog.tongue.y, badFly.x, badFly.y);
 
-    // If the tongue touches the fly, trigger actions
-    if (d < frog.tongue.size / 2 + fly.size / 2) {
+    // If the tongue touches the Good fly, trigger actions
+    if (d < frog.tongue.size / 2 + goodFly.size / 2) {
         // Create particle explosion at the fly's location
-        createParticles(fly.x, fly.y);
+        createParticles(goodFly.x, goodFly.y);
 
         // Reset the fly to a new position
-        resetFly();
+        resetGoodFly();
 
         // Set the tongue to retract (inbound state)
         frog.tongue.state = "inbound";
@@ -317,6 +395,25 @@ function checkTongueFlyOverlap() {
 
         // Play sound effect for catching the fly
         powerupSound.play(); // From audio.js
+    }
+
+    // If the tongue touches the Bad fly, trigger actions
+    if (b < frog.tongue.size / 2 + badFly.size / 2) {
+        // Create particle explosion at the fly's location
+        createParticles(badFly.x, badFly.y);
+
+        // Reset the fly to a new position
+        resetBadFly();
+
+        // Set the tongue to retract (inbound state)
+        frog.tongue.state = "inbound";
+
+        // Increase the score and adjust difficulty
+        decreaseScore();
+        decreaseDifficulty(); // From difficulty.js
+
+        // Play sound effect for catching the fly
+        powerdownSound.play(); // From audio.js
     }
 }
 

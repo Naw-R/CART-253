@@ -30,6 +30,7 @@
 
 let gameState = "intro"; // States: intro, playing, win, lose
 let scorelevel = 10;
+let loseScoreLevel = -3;
 let restartButton; // Restart button element
 
 
@@ -138,7 +139,7 @@ function displayLose() {
  */
 function updateGameState() {
     // if timer ran out
-    if (timer <= 0) {
+    if (timer <= 0 || score <= loseScoreLevel) {
         gameState = "lose";
         noLoop(); // Stop draw loop
         return;
@@ -185,8 +186,11 @@ function restartGame() {
     // Remove the restart button
     restartButton.remove();
 
-    // Reset the fly position
-    resetFly();
+    // Reset the Good fly position
+    resetGoodFly();
+
+    // Reset the bad fly position
+    resetBadFly();
 
     loop(); // Restart the draw loop after a 1-second delay
 }
@@ -197,7 +201,8 @@ function restartGame() {
 function resetGame() {
     score = 0; // Reset score
     timer = 40; // Reset timer to initial value
-    resetFly(); // Reset the fly's position
+    resetGoodFly(); // Reset the fly's position
+    resetBadFly(); // Reset the bad fly's position
 }
 
 /**

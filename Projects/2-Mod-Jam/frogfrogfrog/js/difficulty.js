@@ -11,5 +11,13 @@
  */
 
 function increaseDifficulty() {
-    if (score % 3 === 0) fly.speed += 1; // Increase fly speed every 3 flies
+    if (score % 3 === 0) goodFly.speed += 1; // Increase fly speed every 3 flies
+}
+
+function decreaseDifficulty(){
+    const b = dist(frog.tongue.x, frog.tongue.y, badFly.x, badFly.y);
+    if (b < frog.tongue.size / 2 + badFly.size / 2) {
+        goodFly.speed -= 1; // Decrease fly speed every bad fly
+    }
+    
 }

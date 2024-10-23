@@ -24,6 +24,15 @@ function increaseScore() {
 }
 
 /**
+ * Decrease the score and adjust the background music rate
+ */
+function decreaseScore(){
+    score--;
+    let rate = map(score, 0, 20, 1, 1.5); // Adjust music speed based on score
+    backgroundMusic.rate(rate);
+}
+
+/**
  * Display the current score on the screen
  */
 function displayScore() {
