@@ -203,6 +203,8 @@ function restartGame() {
 function resetGame() {
     score = 0; // Reset score
     timer = 40; // Reset timer to initial value
+    badFly.speed = 2; // Reset bad fly speed
+    goodFly.speed = 3; // Reset good fly speed
     resetGoodFly(); // Reset the fly's position
     resetBadFly(); // Reset the bad fly's position
 }
