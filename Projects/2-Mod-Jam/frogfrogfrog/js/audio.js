@@ -40,9 +40,18 @@ function playBackgroundMusic() {
  * Adjusts buzz sound volume based on distance.
  */
 function updateBuzzSound(distance) {
-    let volume = map(distance, 0, width, 1, 0);
-    buzzSound.setVolume(volume);
-    if (!buzzSound.isPlaying()) {
-        buzzSound.loop();
+    if (gameState === "playing") {
+        // Only adjust the buzz volume if the game is still active
+        let volume = map(distance, 0, width, 1, 0);
+        buzzSound.setVolume(volume);
+
+        if (!buzzSound.isPlaying()) {
+            buzzSound.loop();
+        }
+    } else {
+        // Stop the buzz sound immediately if the game isn't playing
+        if (buzzSound.isPlaying()) {
+            buzzSound.stop();
+        }
     }
 }

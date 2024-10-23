@@ -27,6 +27,8 @@
  * - draw(); – The game loop that renders elements based on the current state.
  * - moveGoodFly(); – Moves the Good fly and resets it if it leaves the screen.
  * - drawGoodFly(); – Draws a detailed Good fly with wings, eyes, and legs.
+ * - moveBadFly(); – Moves the bad fly
+ * - drawBadFly(); – Draws the bad fly
  * - moveFrog(); – Controls frog movement based on mouse and keyboard input.
  * - moveTongue(); – Controls the tongue’s movement and state (idle, outbound, inbound).
  * - drawFrog(); – Draws the frog with body, eyes, and tongue.
@@ -147,9 +149,11 @@ function draw() {
         displayTimer(); // From timer.js
     } else if (gameState === "win") {
         displayWin(); // From storyline.js
+        buzzSound.stop();
         noLoop(); // Stop the loop in intro state
     } else if (gameState === "lose") {
         displayLose(); // From storyline.js
+        buzzSound.stop();
         noLoop(); // Stop the loop in intro state
     }
 }

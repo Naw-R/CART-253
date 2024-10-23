@@ -19,7 +19,7 @@ Finding surprising ways to change a conventional design through programming spec
 Starting with the Frogfrogfrog Project, the following features were added:
 
 - **Sound Effects:** Background music, frog sound, buzzing sound, and power-up sounds enhance the experience.
-- **Scoring System:** Tracks the player's progress with a goal of catching 10 flies.
+- **Scoring System:** Score increases when a Good fly is caught and decreases when a Bad fly is caught.
 - **Game States:** Intro, playing, win, and loss screens for a structured flow.
 - **Timer:** A 40-second countdown adds urgency to the gameplay.
 - **Difficulty Adjustment:** Fly speed increases every 3 flies to increase challenge.
@@ -30,3 +30,4 @@ Starting with the Frogfrogfrog Project, the following features were added:
 - **Restart Button:** Added a restart button to allow players to easily restart the game from the win or loss screens.
 - **Instructions Screen:** Added an instructions menu to guide players through the gameplay.
 - **Start Button:** Introduced a start button on the intro and instructions screens to smoothly begin the game.
+- **Bad Fly Mechanic:** Introduced a new Bad fly character with increased size, distinct red body, and behavior to deduct points.
