@@ -28,3 +28,5 @@ Starting with the Frogfrogfrog Project, the following features were added:
 - **Mouse Control Tracking:** Added logic to track recent mouse movement for smoother interaction.
 - **Particles System:** Created a particle explosion effect when a fly is caught to enhance visual feedback.
 - **Restart Button:** Added a restart button to allow players to easily restart the game from the win or loss screens.
+- **Instructions Screen:** Added an instructions menu to guide players through the gameplay.
+- **Start Button:** Introduced a start button on the intro and instructions screens to smoothly begin the game.

@@ -4,24 +4,46 @@
  * Base Template Creation by : Pippin Barr
  * Improved by : Rowan Nasser
  * 
- * A game of catching flies with your frog-tongue
- * 
- * Basic Instructions:
+ * Basic Instructions by the Teacher:
  * - Move the frog with your mouse
  * - Click to launch the tongue
  * - Catch flies
  * 
  * Additional Instructions : 
+ * This script defines the main mechanics and behaviors for the Frogfrogfrog game, including:
+ * 1. Game Setup: Initializes the canvas, game elements (frog, fly, clouds), audio, and timer.
+ * 2. Game Loop: Uses the `draw()` function to continuously render the game based on the current game state.
+ * 3. Game Mechanics:
+ *    - Frog and fly movement.
+ *    - Tongue mechanics, allowing the frog to catch flies.
+ *    - Particle effects for visual feedback when a fly is caught.
+ * 4. Player Interaction: Handles input via mouse movement, clicks, and keyboard keys (WASD/Arrow keys/Spacebar).
  * 
  * Made with p5
  * https://p5js.org/
+ *
+ * Functions included:
+ * - setup(); – Initializes the canvas, audio, and game elements.
+ * - draw(); – The game loop that renders elements based on the current state.
+ * - moveFly(); – Moves the fly and resets it if it leaves the screen.
+ * - drawFly(); – Draws a detailed fly with wings, eyes, and legs.
+ * - moveFrog(); – Controls frog movement based on mouse and keyboard input.
+ * - moveTongue(); – Controls the tongue’s movement and state (idle, outbound, inbound).
+ * - drawFrog(); – Draws the frog with body, eyes, and tongue.
+ * - checkTongueFlyOverlap(); – Checks if the tongue catches a fly and triggers effects.
+ * - mousePressed(); – Launches the tongue when the player clicks.
+ * - keyPressed(); – Launches the tongue when the player presses Spacebar or W/Up Arrow.
+ * - updateParticles(); – Updates the particle positions and lifespans.
+ * - drawParticles(); – Draws the particle explosion effect.
+ * - createParticles(); – Creates particles to simulate an explosion.
+ * 
  */
 
 "use strict";
 
 let mouseMovedRecently = false; // Track if the mouse moved recently
 
-let particles = [];
+let particles = []; // Array of particles
 
 /**
  * Detect mouse movement to set the flag.
@@ -29,7 +51,6 @@ let particles = [];
 function mouseMoved() {
     mouseMovedRecently = true; // Mouse has moved
 }
-
 
 // Initial configuration of the audio player
 function preload() {
@@ -81,14 +102,6 @@ function setup() {
 
     // Initialize timer
     startTimer(); // Start the timer
-
-    // Start the game with a 3-second intro
-    setTimeout(() => {
-        gameState = "playing";
-        startTimer(); // Start timer only when game begins
-    }, 3000);
-
-
 }
 
 /**
@@ -105,6 +118,8 @@ function draw() {
     // Update game state based on timer and score
     if (gameState === "intro") {
         displayIntro(); // From storyline.js
+    } else if (gameState === "instructions") {
+        displayInstructions(); // From storyline
     } else if (gameState === "playing") {
         moveFly();
         drawFly();
@@ -118,8 +133,10 @@ function draw() {
         displayTimer(); // From timer.js
     } else if (gameState === "win") {
         displayWin(); // From storyline.js
+        noLoop(); // Stop the loop in intro state
     } else if (gameState === "lose") {
         displayLose(); // From storyline.js
+        noLoop(); // Stop the loop in intro state
     }
 }
 
@@ -307,11 +324,6 @@ function checkTongueFlyOverlap() {
  * Launch the tongue on click (if it's not launched yet)
  */
 function mousePressed() {
-    if (gameState === "intro") {
-        gameState = "playing"; // Start the game
-        startTimer(); // Initialize the timer
-        return; // Exit early to avoid triggering other interactions
-    }
     //Additional action to function to make audio play
     if (frog.tongue.state === "idle") {
         frog.tongue.state = "outbound";
@@ -323,9 +335,11 @@ function mousePressed() {
  * Launch the tongue when the player presses the spacebar or clicks the mouse.
  */
 function keyPressed() {
-    if (keyCode === 32 && frog.tongue.state === "idle") { // 32 is Spacebar
-        frog.tongue.state = "outbound"; // Launch the tongue
-        frogSound.play(); // Play frog sound when tongue launches
+    if (keyCode === 32 || keyCode === 87 || keyCode === 38) {
+        if (frog.tongue.state === "idle") { // 32 is Spacebar
+            frog.tongue.state = "outbound"; // Launch the tongue
+            frogSound.play(); // Play frog sound when tongue launches
+        }
     }
 }
 
@@ -336,7 +350,7 @@ function keyPressed() {
  * Removes particles from the array when their lifespan reaches zero.
  */
 function updateParticles() {
-    for (let i = particles.length - 1; i >= 0; i--) { 
+    for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
         p.x += p.vx;
         p.y += p.vy;

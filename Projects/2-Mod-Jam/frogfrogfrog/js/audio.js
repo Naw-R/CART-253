@@ -4,6 +4,11 @@
  * Preloads all game sound assets and controls their playback. 
  * The background music plays in a loop with adjusted volume, and 
  * the buzz sound’s volume changes based on the distance to the player.
+ * 
+ * Functions:
+ * - preloadAudio(); – Preloads all sound assets to prevent lag during gameplay.
+ * - playBackgroundMusic(); – Plays background music on loop with adjusted volume.
+ * - updateBuzzSound(distance); – Adjusts the buzz sound volume dynamically based on the frog’s distance.
  */
 
 // Audio Variables

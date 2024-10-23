@@ -1,9 +1,13 @@
 /*
- * Score Management
+ * Score Management Logic
  *
- * Tracks the player’s score and adjusts the background music speed 
- * as the score increases. The score is displayed in the top-left corner 
- * to show progress toward the goal of catching 10 flies.
+ * This module handles the tracking and display of the player’s score and dynamically adjusts 
+ * the background music speed to enhance the gameplay experience. The score is shown in the 
+ * top-left corner to provide real-time feedback on the player’s progress towards the goal.
+ *
+ * Functions:
+ * - increaseScore() – Increases the score by 1 and maps the score to adjust the background music speed.
+ * - displayScore() – Renders the current score on the screen in the top-left corner for player feedback.
  */
 
 

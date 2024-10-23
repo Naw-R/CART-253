@@ -4,6 +4,10 @@
  * Initializes cloud positions and draws them on the screen. 
  * Clouds move from right to left, resetting to the right side 
  * when they exit the screen to create a continuous scrolling effect.
+ * 
+ * Functions:
+ * - initializeClouds(); – Sets up the starting positions of the clouds.
+ * - drawClouds(); – Draws and animates the clouds across the canvas.
  */
 
 // Variables for cloud positions

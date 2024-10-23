@@ -1,8 +1,13 @@
 /*
- * Difficulty Adjustment
+ * Difficulty Adjustment Logic
  *
- * Increases the fly’s speed every time the score is a multiple of 3, 
- * making the game more challenging as the player catches more flies.
+ * This module dynamically increases the fly's speed as the player progresses, 
+ * adding challenge to the gameplay. The speed increases every time the score 
+ * reaches a multiple of 3, ensuring that the game becomes progressively harder 
+ * as more flies are caught.
+ *
+ * Function:
+ * - increaseDifficulty(); – Checks if the score is a multiple of 3 and increases the fly’s speed accordingly.
  */
 
 function increaseDifficulty() {
