@@ -69,26 +69,28 @@ function displayInstructions() {
     fill(255);
     textAlign(CENTER, CENTER);
 
-    // Features I added to the code
     const instructions = [
         'Welcome to Frogfrogfrog!',
-        'Catch 10 flies before time runs out!',
+        'Catch 10 Good-Flies before time runs out!',
+        'Avoid Bad-Flies – they decrease your score and slow down Good-Flies!',
         'Use mouse or WASD/Arrow keys to move the frog.',
         'Click or press Spacebar to launch the tongue.',
         'Sound, clouds, and particles enhance the game!',
-        'Flies get faster every 3 catches!',
+        'Good-Flies get faster every 3 catches!',
+        'Bad-Flies spawn randomly to challenge you!',
         'Restart easily from win/lose screens.',
         'Good luck and help Frodo feast!'
     ];
 
+
     // Show instructions one line at a time
     instructions.forEach((line, index) => {
-        text(line, width / 2, height / 2 - 100 + index * 30);
+        text(line, width / 2, height / 2 - 180 + index * 30);
     });
 
     // Start Game button
     createButton('Start Game')
-        .position(width + 50, height+60)
+        .position(width + 50, height + 60)
         .mousePressed(() => {
             clearButtons(); // Clear buttons
             resetGame(); // Reset game variables
@@ -98,7 +100,7 @@ function displayInstructions() {
 
     // Back to Intro button
     createButton('Back to Intro')
-        .position(width + 50, height +90)
+        .position(width + 50, height + 90)
         .mousePressed(() => {
             clearButtons(); // Clear buttons
             resetGame(); // Reset any variables if needed
@@ -127,7 +129,7 @@ function displayLose() {
     textSize(32);
     textAlign(CENTER, CENTER);
     fill(0); // Black text color
-    text("Time's up! Frodo's feast is over.", width / 2, height / 2);
+    text("Frodo's feast is over.", width / 2, height / 2);
     text("You Lost!", width / 2, height / 2 + 40);
 
     createRestartButton(); // Create the restart button
