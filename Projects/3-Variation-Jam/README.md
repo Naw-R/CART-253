@@ -1,7 +1,7 @@
 # **Emoji Word Guessing Game**
 
 **Author**: Rowan Nasser  
-[**View this project online**](URL_FOR_THE_RUNNING_PROJECT)
+[**View this project online**](https://naw-r.github.io/CART-253/Projects/3-Variation-Jam/)
 
 ---
 
