@@ -1,7 +1,7 @@
 {
     "books":
     [
-  { "title": "Harry Potter", "author": "J.K. Rowling", "emoji": "⚡📚" },
+  { "title": "Harry Potter", "author": "J.K. Rowling", "emoji": "🧙⚡" },
   { "title": "The Hobbit", "author": "J.R.R. Tolkien", "emoji": "🧙‍♂️🏞️" },
   { "title": "Charlotte's Web", "author": "E.B. White", "emoji": "🕸️🐖" },
   { "title": "Matilda", "author": "Roald Dahl", "emoji": "📖🧠" },
