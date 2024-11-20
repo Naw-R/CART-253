@@ -32,6 +32,7 @@ function displayMenu() {
     createThemeButton("TV Shows", 380, () => selectTheme("tv"));
     createThemeButton("Countries and Capitals", 440, () => selectTheme("countries"));
     createThemeButton("Brands and Logos", 500, () => selectTheme("brands"));
+
 }
 
 /**
@@ -62,7 +63,7 @@ function selectTheme(theme) {
     selectedTheme = theme;
     console.log(`Selected theme: ${theme}`);
     inMainMenu = false;
-    
+
     clearMenuButtons(); // Clear all buttons from the main menu
     startTimer(); // Start the timer
     redraw(); // Trigger redraw to show the theme page

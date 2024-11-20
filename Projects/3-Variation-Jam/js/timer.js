@@ -38,10 +38,18 @@ function updateTimer() {
  * Draws the timer on the canvas.
  */
 function drawTimer() {
-    textSize(24);
-    textAlign(LEFT, TOP);
-    fill(50);
-    text(`Time Left: ${timer}s`, 20, 20); // Display the timer on the top left
+    if (timerRunning) {
+        // Clear the area where the timer is drawn
+        fill(255); // White background to "erase" previous timer text
+        noStroke();
+        rect(20, 20, 150, 40); // Clear the timer display area (adjust width/height as needed)
+
+        // Draw the timer text
+        textSize(24);
+        fill(50); // Text color
+        textAlign(LEFT, TOP);
+        text(`Time Left: ${timer}s`, 20, 20); // Display the timer at a fixed position
+    }
 }
 
 /**

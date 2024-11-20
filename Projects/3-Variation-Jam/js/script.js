@@ -12,6 +12,12 @@ let movieData, songData, bookData, tvData, countryData, brandData;
 // Variable to track the currently selected theme
 let selectedTheme = null;
 
+// Variable to track if the game is waiting in the theme lobby
+let inThemeLobby = true;
+
+// Variable to store the "Start" button reference
+let startButton = null;
+
 function preload() {
     // Load JSON files for all themes
     movieData = loadJSON("assets/data/movieTitles.json");
@@ -29,9 +35,14 @@ function setup() {
 
 function draw() {
     if (!inMainMenu && selectedTheme) {
-        displayThemePage(); // Display the theme page when a theme is selected
-        updateTimer(); // Update the timer
-        drawTimer(); // Draw the timer
+        if (inThemeLobby) {
+            displayThemePage(); // Display the theme lobby with "Start" button
+            displayStartButton();   // Display the start button
+        } else {
+            displayThemePage();
+            updateTimer(); // Start updating the timer once the game starts
+            drawTimer(); // Display the timer
+        }
     }
 }
 
@@ -76,5 +87,43 @@ function displayThemePage() {
     backButton.mousePressed(() => {
         backButton.remove(); // Remove the back button
         displayMenu(); // Go back to the main menu
+        resetGameState();
     });
+}
+function displayStartButton(){
+    // Create the "Start" button if it doesn't exist
+    if (!startButton) {
+        startButton = createButton("Start Game");
+        startButton.position(width / 2 - 50, height / 2); // Centered
+        startButton.size(100, 50);
+        startButton.mousePressed(() => {
+            inThemeLobby = false; // Transition to gameplay
+            startButton.remove(); // Remove the "Start" button
+            startButton = null; // Reset the button reference
+            startTimer(); // Begin the timer
+        });
+    }
+}
+
+/**
+ * Resets the game state and navigates back to the main menu.
+ */
+function resetGameState() {
+    // Remove any buttons
+    if (startButton) startButton.remove();
+    startButton = null;
+
+    // Reset game variables
+    selectedTheme = null;
+    inThemeLobby = true;
+
+    // Stop the timer
+    timerActive = false;
+
+    // Return to the main menu
+    displayMenu();
+}
+
+function clearCanvas(){
+    background(255);
 }
