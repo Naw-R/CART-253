@@ -18,6 +18,8 @@ let inThemeLobby = true;
 // Variable to store the "Start" button reference
 let startButton = null;
 
+let backgroundImage;
+
 function preload() {
     // Load JSON files for all themes
     movieData = loadJSON("assets/data/movieTitles.json");
@@ -26,6 +28,9 @@ function preload() {
     tvData = loadJSON("assets/data/tvShows.json");
     countryData = loadJSON("assets/data/countriesAndCapitals.json");
     brandData = loadJSON("assets/data/brandsAndLogos.json");
+
+    // Load the background image
+    backgroundImage = loadImage("assets/images/background.jpg");
 }
 
 function setup() {
@@ -54,7 +59,9 @@ function displayThemePage() {
 
     textSize(24);
     textAlign(CENTER, TOP);
-    fill(50);
+    fill(25);
+    stroke(0);
+    strokeWeight(0);
 
     // Show theme-specific content
     switch (selectedTheme) {

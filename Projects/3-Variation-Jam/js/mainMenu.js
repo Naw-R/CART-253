@@ -18,11 +18,18 @@ function displayMenu() {
     // Clear existing buttons
     clearMenuButtons();
 
+    // Draw the background image
+    if (backgroundImage) {
+        image(backgroundImage, 0, 0, width, height); // Stretch to canvas size
+    }
+
     // Display the welcome message
-    textSize(32);
+    textSize(64);
     textAlign(CENTER, CENTER);
-    fill(50);
-    text("Welcome to the Crossword Emoji Game!", width / 2, 100);
+    fill(255);
+    stroke(0);
+    strokeWeight(5);
+    text("Welcome to the Guess the Emoji Game!", width / 2, 100);
 
     // Create theme buttons
     textSize(20);
