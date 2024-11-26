@@ -57,6 +57,7 @@ The goal is to correctly guess the hidden phrase using the provided emoji clue. 
 This project was built using the following tools and resources:
 - [p5.js](https://p5js.org) for canvas rendering and DOM manipulation.
 - [Pippin Barr’s JSON Tutorial](https://pippinbarr.com/cart253/topics/data/json.html) for understanding JSON integration.
+- [PixaBay] (https://pixabay.com) for sound effects
 
 ---
 
