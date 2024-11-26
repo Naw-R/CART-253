@@ -6,6 +6,10 @@
 // Array to store references to menu buttons
 let menuButtons = [];
 
+// Variable to store background music
+let backgroundMusic;
+
+
 /**
  * Displays the main menu.
  */
@@ -19,6 +23,17 @@ function displayMenu() {
     if (backgroundImage) {
         image(backgroundImage, 0, 0, width, height);
     }
+
+    // Play background music (only if not already playing)
+    console.log('Checking background music state...');
+    if (backgroundMusic && !backgroundMusic.isPlaying()) {
+        console.log('Playing background music');
+        backgroundMusic.loop();
+        backgroundMusic.setVolume(1);
+    }
+
+    // Create a mute button for user control
+    createMuteButton();
 
     textSize(64);
     textAlign(CENTER, CENTER);
@@ -55,4 +70,30 @@ function clearMenuButtons() {
         button.remove(); // Remove each button
     }
     menuButtons = []; // Reset the array
+}
+
+/**
+ * Stops background music playback.
+ */
+function stopBackgroundMusic() {
+    if (backgroundMusic && backgroundMusic.isPlaying()) { // Added null check
+        backgroundMusic.stop();
+    }
+}
+
+function createMuteButton() {
+    // Create a "Mute" button
+    let muteButton = createButton('Mute');
+    muteButton.size(100, 40); // Set button size
+    muteButton.position(1400, 10); // Position the button at the top-right corner
+    muteButton.mousePressed(() => {
+        if (backgroundMusic && backgroundMusic.isPlaying()) {
+            backgroundMusic.stop(); // Stop the music
+            muteButton.html('Unmute'); // Update button label
+        } else if (backgroundMusic) {
+            backgroundMusic.loop(); // Play the music
+            backgroundMusic.setVolume(0.5); // Adjust volume
+            muteButton.html('Mute'); // Update button label
+        }
+    });
 }

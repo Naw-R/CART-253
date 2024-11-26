@@ -32,6 +32,9 @@ function preload() {
 
     // Load the background image
     backgroundImage = loadImage("assets/images/background.jpg");
+
+    // Load the background music
+    backgroundMusic = loadSound('assets/sounds/background.mp3');
 }
 
 function setup() {
@@ -161,6 +164,9 @@ function clearButtons() {
  * Handles theme selection.
  */
 function selectTheme(theme) {
+    stopBackgroundMusic(); // Stop the menu music
+    console.log("backgroundMusic stopped");
+
     selectedTheme = theme;
     inMainMenu = false;
     clearButtons();
