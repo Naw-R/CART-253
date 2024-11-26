@@ -9,15 +9,16 @@
 // Global variables to store JSON data for each theme
 let movieData, songData, bookData, tvData, countryData, brandData;
 
-// Variable to track the currently selected theme
+// Variables to track the game state
 let selectedTheme = null;
-
-// Variable to track if the game is waiting in the theme lobby
 let inThemeLobby = true;
+let inMainMenu = true;
 
-// Variable to store the "Start" button reference
+// Button references
 let startButton = null;
+let backButton = null;
 
+// Assets
 let backgroundImage;
 
 function preload() {
@@ -41,13 +42,33 @@ function setup() {
 function draw() {
     if (!inMainMenu && selectedTheme) {
         if (inThemeLobby) {
-            displayThemePage(); // Display the theme lobby with "Start" button
-            displayStartButton();   // Display the start button
+            displayThemePage();
+            displayStartButton();
         } else {
             displayThemePage();
-            updateTimer(); // Start updating the timer once the game starts
-            drawTimer(); // Display the timer
+            updateTimer();
+            drawTimer();
         }
+    }
+}
+
+/**
+ * Handles window resizing to adjust button positions.
+ */
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    updateButtonPositions();
+}
+
+/**
+ * Updates button positions dynamically based on the current window size.
+ */
+function updateButtonPositions() {
+    if (startButton) {
+        startButton.position(width / 2 - 50, height / 2);
+    }
+    if (backButton) {
+        backButton.position(width / 2 - 100, height - 100);
     }
 }
 
@@ -63,7 +84,6 @@ function displayThemePage() {
     stroke(0);
     strokeWeight(0);
 
-    // Show theme-specific content
     switch (selectedTheme) {
         case "movies":
             text("Movies Theme Selected!", width / 2, 30);
@@ -87,50 +107,73 @@ function displayThemePage() {
             text("No theme selected.", width / 2, 30);
     }
 
-    // Create a button to return to the main menu
-    let backButton = createButton("Return to Menu");
-    backButton.position(width / 2 - 100, height - 100);
-    backButton.size(200, 40);
-    backButton.mousePressed(() => {
-        backButton.remove(); // Remove the back button
-        displayMenu(); // Go back to the main menu
-        resetGameState();
-    });
+    displayBackButton();
 }
-function displayStartButton(){
-    // Create the "Start" button if it doesn't exist
+
+/**
+ * Displays the "Start Game" button.
+ */
+function displayStartButton() {
     if (!startButton) {
         startButton = createButton("Start Game");
-        startButton.position(width / 2 - 50, height / 2); // Centered
+        startButton.position(width / 2 - 50, height / 2);
         startButton.size(100, 50);
         startButton.mousePressed(() => {
-            inThemeLobby = false; // Transition to gameplay
-            startButton.remove(); // Remove the "Start" button
-            startButton = null; // Reset the button reference
-            startTimer(); // Begin the timer
+            inThemeLobby = false;
+            clearButtons();
+            startTimer();
         });
     }
+}
+
+/**
+ * Displays the "Return to Menu" button.
+ */
+function displayBackButton() {
+    if (!backButton) {
+        backButton = createButton("Return to Menu");
+        backButton.position(width / 2 - 100, height - 100);
+        backButton.size(200, 40);
+        backButton.mousePressed(() => {
+            resetGameState();
+        });
+    }
+}
+
+/**
+ * Clears all existing buttons.
+ */
+function clearButtons() {
+    // Clear start and back buttons
+    if (startButton) {
+        startButton.remove();
+        startButton = null;
+    }
+    if (backButton) {
+        backButton.remove();
+        backButton = null;
+    }
+    // Clear main menu buttons
+    clearMenuButtons();
+}
+
+/**
+ * Handles theme selection.
+ */
+function selectTheme(theme) {
+    selectedTheme = theme;
+    inMainMenu = false;
+    clearButtons();
+    inThemeLobby = true;
 }
 
 /**
  * Resets the game state and navigates back to the main menu.
  */
 function resetGameState() {
-    // Remove any buttons
-    if (startButton) startButton.remove();
-    startButton = null;
-
-    // Reset game variables
+    clearButtons();
     selectedTheme = null;
     inThemeLobby = true;
-
-    // Stop the timer
-    timerActive = false;
-
-    // Return to the main menu
+    inMainMenu = true;
     displayMenu();
-}
-
-function clearCanvas(){
-    background(255);
 }

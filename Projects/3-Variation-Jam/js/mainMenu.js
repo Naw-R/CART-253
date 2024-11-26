@@ -3,9 +3,8 @@
  * Main menu functionality for the Emoji Word Guessing Game
  */
 
-// Global variables for main menu
-let inMainMenu = true; // Tracks if we are in the main menu
-let menuButtons = []; // Stores references to menu buttons
+// Array to store references to menu buttons
+let menuButtons = [];
 
 /**
  * Displays the main menu.
@@ -15,15 +14,12 @@ function displayMenu() {
     inMainMenu = true;
     selectedTheme = null;
 
-    // Clear existing buttons
     clearMenuButtons();
 
-    // Draw the background image
     if (backgroundImage) {
-        image(backgroundImage, 0, 0, width, height); // Stretch to canvas size
+        image(backgroundImage, 0, 0, width, height);
     }
 
-    // Display the welcome message
     textSize(64);
     textAlign(CENTER, CENTER);
     fill(255);
@@ -31,7 +27,6 @@ function displayMenu() {
     strokeWeight(5);
     text("Welcome to the Guess the Emoji Game!", width / 2, 100);
 
-    // Create theme buttons
     textSize(20);
     createThemeButton("Movie Titles", 200, () => selectTheme("movies"));
     createThemeButton("Song Lyrics", 260, () => selectTheme("songs"));
@@ -39,11 +34,10 @@ function displayMenu() {
     createThemeButton("TV Shows", 380, () => selectTheme("tv"));
     createThemeButton("Countries and Capitals", 440, () => selectTheme("countries"));
     createThemeButton("Brands and Logos", 500, () => selectTheme("brands"));
-
 }
 
 /**
- * Creates a button for a theme in the main menu.
+ * Creates a theme button and adds it to the global menuButtons array.
  */
 function createThemeButton(label, y, onClick) {
     let button = createButton(label);
@@ -54,24 +48,11 @@ function createThemeButton(label, y, onClick) {
 }
 
 /**
- * Clears all buttons in the main menu.
+ * Clears all buttons created in the main menu.
  */
 function clearMenuButtons() {
     for (let button of menuButtons) {
         button.remove(); // Remove each button
     }
-    menuButtons = []; // Reset the buttons array
-}
-
-/**
- * Handles theme selection.
- */
-function selectTheme(theme) {
-    selectedTheme = theme;
-    console.log(`Selected theme: ${theme}`);
-    inMainMenu = false;
-
-    clearMenuButtons(); // Clear all buttons from the main menu
-    startTimer(); // Start the timer
-    redraw(); // Trigger redraw to show the theme page
+    menuButtons = []; // Reset the array
 }
