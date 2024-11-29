@@ -3,10 +3,6 @@
  * Timer functionality for the Emoji Word Guessing Game
  */
 
-// Timer variables
-let timer = 60; // Start at 60 seconds
-let lastSecondTime = 0; // Track the last time the timer updated
-let timerRunning = false; // Flag to control when the timer is active
 
 /**
  * Starts the timer.
@@ -20,16 +16,19 @@ function startTimer() {
 /**
  * Updates the timer every second.
  */
+/**
+ * Updates the timer and handles timeout logic.
+ */
 function updateTimer() {
     if (timerRunning) {
-        let currentTime = millis();
+        const currentTime = millis();
         if (currentTime - lastSecondTime >= 1000) { // Check if 1 second has passed
-            timer--; // Decrease the timer by 1
-            lastSecondTime = currentTime; // Update the last time
+            timer--; // Decrement the timer
+            lastSecondTime = currentTime; // Update lastSecondTime
         }
         if (timer <= 0) {
             timerRunning = false; // Stop the timer
-            handleTimeOut(); // Call timeout logic
+            endGame(false); // Trigger game over (loss)
         }
     }
 }
@@ -58,8 +57,7 @@ function drawTimer() {
 function handleTimeOut() {
     console.log("Time's up! Revealing the correct phrase.");
     // Reveal the correct phrase or display a message
-    displayCorrectAnswer();
-    // Add any transition logic (e.g., countdown to next round)
+    endGame(false); // Call `endGame(false)` in game.js for losing condition
 }
 
 /**
@@ -73,3 +71,21 @@ function displayCorrectAnswer() {
     text("Time's up! The correct phrase was:", width / 2, height / 2 - 50);
     text(selectedPhrase.title, width / 2, height / 2); // Replace with the correct phrase
 }
+
+/**
+ * Resets the timer
+*/
+function resetTimer() {
+    timer = 60; // Example reset logic
+    console.log("Timer reset to 60 seconds");
+}
+
+/**
+
+ * Stops the timer.
+ */
+function stopTimer() {
+    timerRunning = false; // Disable the timer
+    console.log("Timer stopped."); // Log for debugging purposes
+}
+

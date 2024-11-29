@@ -6,9 +6,6 @@
 // Array to store references to menu buttons
 let menuButtons = [];
 
-// Variable to store background music
-let backgroundMusic;
-
 
 /**
  * Displays the main menu.

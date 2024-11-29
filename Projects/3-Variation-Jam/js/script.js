@@ -1,153 +1,234 @@
 /**
- * Emoji Word Guessing Game
- * Rowan Nasser
- * Main running page of the game
+ * script.js
+ * Handles the overall game state, UI transitions, and main menu rendering.
  */
 
-"use strict";
+// Game state constants
+const GameState = {
+    MAIN_MENU: "mainMenu",
+    THEME_LOBBY: "themeLobby",
+    GAMEPLAY: "gameplay",
+};
 
-// Global variables to store JSON data for each theme
-let movieData, songData, bookData, tvData, countryData, brandData;
+// Global variables
+let currentGameState = GameState.MAIN_MENU; // Initial state
+let selectedTheme = null; // Stores the selected theme
+let timer = 60; // Countdown timer for gameplay
+let timerRunning = false; // Whether the timer is active
+let lastSecondTime; // Tracks the last recorded time for the timer
 
-// Variables to track the game state
-let selectedTheme = null;
-let inThemeLobby = true;
-let inMainMenu = true;
-
-// Button references
+// UI elements
+let themeButtons = [];
 let startButton = null;
 let backButton = null;
+let muteButton = null;
 
 // Assets
 let backgroundImage;
+let backgroundMusic;
 
+/**
+ * Preloads assets like images and sounds.
+ */
 function preload() {
-    // Load JSON files for all themes
-    movieData = loadJSON("assets/data/movieTitles.json");
-    songData = loadJSON("assets/data/songLyrics.json");
-    bookData = loadJSON("assets/data/bookTitles.json");
-    tvData = loadJSON("assets/data/tvShows.json");
-    countryData = loadJSON("assets/data/countriesAndCapitals.json");
-    brandData = loadJSON("assets/data/brandsAndLogos.json");
-
-    // Load the background image
     backgroundImage = loadImage("assets/images/background.jpg");
-
-    // Load the background music
-    backgroundMusic = loadSound('assets/sounds/background.mp3');
+    backgroundMusic = loadSound("assets/sounds/background.mp3");
 }
 
+/**
+ * Sets up the canvas and initializes the main menu.
+ */
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    displayMenu(); // Display the main menu initially
+    updateState(GameState.MAIN_MENU); // Initialize to main menu
 }
 
+/**
+ * Main draw loop to render UI based on the current game state.
+ */
 function draw() {
-    if (!inMainMenu && selectedTheme) {
-        if (inThemeLobby) {
-            displayThemePage();
-            displayStartButton();
-        } else {
-            displayThemePage();
-            updateTimer();
-            drawTimer();
-        }
+    clearCanvas();
+
+    switch (currentGameState) {
+        case GameState.MAIN_MENU:
+            renderMainMenu();
+            break;
+        case GameState.THEME_LOBBY:
+            renderThemeLobby();
+            break;
+        case GameState.GAMEPLAY:
+            renderGameplay();
+            if (timerRunning) updateTimer(); // Ensure the timer updates during gameplay
+            break;
     }
 }
 
 /**
- * Handles window resizing to adjust button positions.
+ * Updates the current game state and reinitializes the UI.
+ * @param {string} newState - The new game state.
  */
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-    updateButtonPositions();
-}
+function updateState(newState) {
+    currentGameState = newState;
+    clearCanvas();
+    clearButtons();
 
-/**
- * Updates button positions dynamically based on the current window size.
- */
-function updateButtonPositions() {
-    if (startButton) {
-        startButton.position(width / 2 - 50, height / 2);
-    }
-    if (backButton) {
-        backButton.position(width / 2 - 100, height - 100);
+    if (newState === GameState.MAIN_MENU) {
+        renderMainMenu();
+    } else if (newState === GameState.THEME_LOBBY) {
+        renderThemeLobby();
+    } else if (newState === GameState.GAMEPLAY) {
+        startGameplay();
     }
 }
 
 /**
- * Displays the theme page when a theme is selected.
+ * Clears the canvas and resets the background.
  */
-function displayThemePage() {
+function clearCanvas() {
     background(255);
-
-    textSize(24);
-    textAlign(CENTER, TOP);
-    fill(25);
-    stroke(0);
-    strokeWeight(0);
-
-    switch (selectedTheme) {
-        case "movies":
-            text("Movies Theme Selected!", width / 2, 30);
-            break;
-        case "songs":
-            text("Song Lyrics Theme Selected!", width / 2, 30);
-            break;
-        case "books":
-            text("Book Titles Theme Selected!", width / 2, 30);
-            break;
-        case "tv":
-            text("TV Shows Theme Selected!", width / 2, 30);
-            break;
-        case "countries":
-            text("Countries and Capitals Theme Selected!", width / 2, 30);
-            break;
-        case "brands":
-            text("Brands and Logos Theme Selected!", width / 2, 30);
-            break;
-        default:
-            text("No theme selected.", width / 2, 30);
+    if (currentGameState === GameState.MAIN_MENU && backgroundImage) {
+        image(backgroundImage, 0, 0, width, height);
     }
-
-    displayBackButton();
 }
 
 /**
- * Displays the "Start Game" button.
+ * Renders the main menu with theme options and a mute button.
  */
-function displayStartButton() {
+function renderMainMenu() {
+    // Display background image
+    if (backgroundImage) {
+        image(backgroundImage, 0, 0, width, height);
+    }
+
+    // Display title
+    textSize(48);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text("Guess the Emoji Game!", width / 2, height / 4);
+
+    // Display theme buttons
+    if (themeButtons.length === 0) {
+        const themes = ["movies", "songs", "books", "tv", "countries", "brands"];
+        themes.forEach((theme, index) => {
+            createThemeButton(
+                capitalize(theme),
+                height / 3 + index * 60,
+                () => selectTheme(theme)
+            );
+        });
+    }
+
+    // Display mute button
+    if (!muteButton) {
+        muteButton = createButton("Mute");
+        muteButton.position(width - 100, 20);
+        muteButton.mousePressed(toggleBackgroundMusic);
+    }
+
+    // Ensure background music is playing
+    playBackgroundMusic();
+}
+
+/**
+ * Renders the theme lobby with the title and navigation buttons.
+ */
+function renderThemeLobby() {
+    // Display theme title
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(`${capitalize(selectedTheme)} Theme`, width / 2, height / 5);
+
+    // Create Start Game button
     if (!startButton) {
         startButton = createButton("Start Game");
         startButton.position(width / 2 - 50, height / 2);
         startButton.size(100, 50);
-        startButton.mousePressed(() => {
-            inThemeLobby = false;
-            clearButtons();
-            startTimer();
-        });
+        startButton.mousePressed(() => updateState(GameState.GAMEPLAY));
+    }
+
+    // Create Return to Main Menu button
+    if (!backButton) {
+        backButton = createButton("Return to Main Menu");
+        backButton.position(width / 2 - 100, height - height / 8);
+        backButton.size(200, 40);
+        backButton.mousePressed(() => updateState(GameState.MAIN_MENU));
     }
 }
 
 /**
- * Displays the "Return to Menu" button.
+ * Starts the gameplay.
  */
-function displayBackButton() {
+function startGameplay() {
+    timer = 60; // Reset timer to 60 seconds
+    timerRunning = true;
+    lastSecondTime = millis(); // Initialize lastSecondTime
+    loadTheme(selectedTheme); // Load the selected theme (defined in game.js)
+}
+
+/**
+ * Renders the gameplay UI with the timer, theme title, and puzzle.
+ */
+/**
+ * Renders the gameplay UI with the timer, theme title, and puzzle.
+ */
+function renderGameplay() {
+    // Display timer
+    textSize(24);
+    textAlign(LEFT, TOP);
+    fill(0);
+    text(`Time: ${timer}s`, 20, 20); // Top-left timer display
+
+    // Display theme title
+    textAlign(CENTER, TOP);
+    textSize(32);
+    text(`${capitalize(selectedTheme)} Theme`, width / 2, 20); // Top-center theme title
+
+    // Display puzzle (handled by game.js)
+    if (inGameState.puzzle) {
+        drawGameBoard(inGameState.puzzle.emoji, inGameState.puzzle.title); // Render emojis and slots
+    }
+
+    // Create Return to Main Menu button
     if (!backButton) {
-        backButton = createButton("Return to Menu");
-        backButton.position(width / 2 - 100, height - 100);
+        backButton = createButton("Return to Main Menu");
+        backButton.position(width / 2 - 100, height - height / 8); // Bottom center
         backButton.size(200, 40);
         backButton.mousePressed(() => {
-            resetGameState();
+            timerRunning = false; // Stop the timer
+            updateState(GameState.MAIN_MENU); // Go back to the main menu
         });
     }
 }
 
 /**
- * Clears all existing buttons.
+ * Toggles background music on/off.
+ */
+function toggleBackgroundMusic() {
+    if (backgroundMusic.isPlaying()) {
+        backgroundMusic.stop();
+        muteButton.html("Unmute");
+    } else {
+        backgroundMusic.loop();
+        muteButton.html("Mute");
+    }
+}
+
+/**
+ * Plays the background music if not already playing.
+ */
+function playBackgroundMusic() {
+    if (backgroundMusic && !backgroundMusic.isPlaying()) {
+        backgroundMusic.loop();
+    }
+}
+
+/**
+ * Clears all buttons on the screen.
  */
 function clearButtons() {
-    // Clear start and back buttons
+    themeButtons.forEach(button => button.remove());
+    themeButtons = [];
     if (startButton) {
         startButton.remove();
         startButton = null;
@@ -156,30 +237,49 @@ function clearButtons() {
         backButton.remove();
         backButton = null;
     }
-    // Clear main menu buttons
-    clearMenuButtons();
+    if (muteButton) {
+        muteButton.remove();
+        muteButton = null;
+    }
 }
 
 /**
- * Handles theme selection.
+ * Creates a button for a theme.
+ * @param {string} label - The button label.
+ * @param {number} y - The vertical position of the button.
+ * @param {function} onClick - The function to call on button press.
+ */
+function createThemeButton(label, y, onClick) {
+    const button = createButton(label);
+    button.position(width / 2 - 100, y);
+    button.size(200, 40);
+    button.mousePressed(onClick);
+    themeButtons.push(button);
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} str - The string to capitalize.
+ * @returns {string} - The capitalized string.
+ */
+function capitalize(str) {
+    if (!str || typeof str !== "string") {
+        console.error("Invalid string provided to capitalize:", str);
+        return "";
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Handles theme selection and transitions to the theme lobby.
+ * @param {string} theme - The selected theme.
  */
 function selectTheme(theme) {
-    stopBackgroundMusic(); // Stop the menu music
-    console.log("backgroundMusic stopped");
-
-    selectedTheme = theme;
-    inMainMenu = false;
-    clearButtons();
-    inThemeLobby = true;
-}
-
-/**
- * Resets the game state and navigates back to the main menu.
- */
-function resetGameState() {
-    clearButtons();
-    selectedTheme = null;
-    inThemeLobby = true;
-    inMainMenu = true;
-    displayMenu();
+    if (!theme) {
+        console.error("Invalid theme selected");
+        return;
+    }
+    selectedTheme = theme; // Set the selected theme
+    console.log(`Theme selected: ${theme}`); // Debug log
+    updateState(GameState.THEME_LOBBY); // Transition to the theme lobby
 }

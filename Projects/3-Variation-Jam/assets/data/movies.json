@@ -35,8 +35,6 @@
   { "title": "Encanto", "emoji": "🏠🕯️" },
   { "title": "Luca", "emoji": "🌊🚲" },
   { "title": "Turning Red", "emoji": "🐼🧣" },
-  { "title": "The Mitchells vs. The Machines", "emoji": "🤖🚙" },
-  { "title": "Cloudy with a Chance of Meatballs", "emoji": "🌧️🍔" },
   { "title": "Bolt", "emoji": "🐕⚡" },
   { "title": "Wreck-It Ralph", "emoji": "👾🕹️" },
   { "title": "Sing", "emoji": "🎤🐷" },
@@ -48,8 +46,7 @@
   { "title": "Sleeping Beauty", "emoji": "💤👸" },
   { "title": "Snow White", "emoji": "🍎👸" },
   { "title": "Paddington", "emoji": "🐻🧥" },
-  { "title": "The Peanuts Movie", "emoji": "🐕✈️" },
-  { "title": "E.T. the Extra-Terrestrial", "emoji": "👽🚲" }
+  { "title": "The Peanuts Movie", "emoji": "🐕✈️" }
 ]
 
 }
