@@ -46,19 +46,40 @@ function setup() {
 /**
  * Main draw loop to render UI based on the current game state.
  */
+/**
+ * Main draw loop to render UI based on the current game state.
+ */
 function draw() {
+    // Clear the canvas for the current frame
     clearCanvas();
 
+    // Debugging log to track the current game state
+    console.log("Current game state in draw():", currentGameState);
+
+    // Switch between different game states
     switch (currentGameState) {
         case GameState.MAIN_MENU:
-            renderMainMenu();
+            renderMainMenu(); // Render the main menu
             break;
         case GameState.THEME_LOBBY:
-            renderThemeLobby();
+            renderThemeLobby(); // Render the theme lobby
             break;
         case GameState.GAMEPLAY:
-            renderGameplay();
-            if (timerRunning) updateTimer(); // Ensure the timer updates during gameplay
+            if (!inGameState.puzzle) {
+                console.error("No puzzle initialized. Cannot render gameplay.");
+                return; // Stop rendering if no puzzle is loaded
+            }
+
+            renderGameplay(); // Render the gameplay UI
+
+            if (timerRunning) {
+                updateTimer(); // Update the timer during gameplay
+            }
+
+            updateBoard(currentInput, inGameState.puzzle.title); // Update the puzzle board with user input
+            break;
+        default:
+            console.error("Unknown game state:", currentGameState);
             break;
     }
 }
@@ -68,6 +89,7 @@ function draw() {
  * @param {string} newState - The new game state.
  */
 function updateState(newState) {
+    console.log(`State transitioning from ${currentGameState} to ${newState}`);
     currentGameState = newState;
     clearCanvas();
     clearButtons();
@@ -77,7 +99,7 @@ function updateState(newState) {
     } else if (newState === GameState.THEME_LOBBY) {
         renderThemeLobby();
     } else if (newState === GameState.GAMEPLAY) {
-        startGameplay();
+        startGameplay(); // Initialize gameplay state
     }
 }
 
@@ -133,21 +155,24 @@ function renderMainMenu() {
  * Renders the theme lobby with the title and navigation buttons.
  */
 function renderThemeLobby() {
-    // Display theme title
+    console.log("Current game state:", currentGameState);
+    console.log("Current puzzle:", inGameState.puzzle);
+
     textSize(32);
     textAlign(CENTER, CENTER);
     fill(0);
     text(`${capitalize(selectedTheme)} Theme`, width / 2, height / 5);
 
-    // Create Start Game button
     if (!startButton) {
         startButton = createButton("Start Game");
         startButton.position(width / 2 - 50, height / 2);
         startButton.size(100, 50);
-        startButton.mousePressed(() => updateState(GameState.GAMEPLAY));
+        startButton.mousePressed(() => {
+            console.log("Start Game button pressed");
+            updateState(GameState.GAMEPLAY);
+        });
     }
 
-    // Create Return to Main Menu button
     if (!backButton) {
         backButton = createButton("Return to Main Menu");
         backButton.position(width / 2 - 100, height - height / 8);
@@ -160,10 +185,11 @@ function renderThemeLobby() {
  * Starts the gameplay.
  */
 function startGameplay() {
-    timer = 60; // Reset timer to 60 seconds
-    timerRunning = true;
-    lastSecondTime = millis(); // Initialize lastSecondTime
-    loadTheme(selectedTheme); // Load the selected theme (defined in game.js)
+    console.log("Starting gameplay...");
+    timer = 60; // Reset timer
+    timerRunning = true; // Activate timer
+    lastSecondTime = millis(); // Start time tracking
+    loadTheme(selectedTheme); // Load the puzzle based on the theme
 }
 
 /**

@@ -10,6 +10,9 @@ const inGameState = {
     guessedLetters: [],    // Array to track guessed letters
 };
 
+let currentInput = []; // Tracks the user's current input
+let frozenLetters = Array(inGameState.puzzle?.title.length).fill(false); // Tracks frozen (correct) letters
+
 /**
  * Loads the selected theme's JSON file.
  * @param {string} themeName - The selected theme.
@@ -41,45 +44,71 @@ function loadTheme(themeName) {
  * @returns {Array} Array of normalized puzzles.
  */
 function extractPuzzles(data, themeName) {
-    if (themeName === "movies") return data.movieTitles; // Movies already use title and emoji
-    if (themeName === "songs") return data.popularSongs.map(song => ({
+    if (!data) {
+        console.error("Data is undefined or null. Cannot extract puzzles.");
+        return [];
+    }
+
+    // Match the theme name to the correct data key
+    if (themeName === "movies" && data.movieTitles) return data.movieTitles;
+    if (themeName === "songs" && data.popularSongs) return data.popularSongs.map(song => ({
         title: song.title,
         emoji: song.emoji,
     }));
-    if (themeName === "tv") return data.tvShows; // TV shows use title and emoji
-    if (themeName === "countries") return data.countries.map(country => ({
+    if (themeName === "tv" && data.tvShows) return data.tvShows;
+    if (themeName === "countries" && data.countries) return data.countries.map(country => ({
         title: country.country,
         emoji: country.emoji,
     }));
-    if (themeName === "brands") {
-        // Flatten the nested array and normalize to title/emoji structure
+    if (themeName === "brands" && data.brands) {
         return data.brands.flat().map(brand => ({
             title: brand.brand,
             emoji: brand.emoji,
         }));
     }
-    if (themeName === "books") return data.books.map(book => ({
+    if (themeName === "books" && data.books) return data.books.map(book => ({
         title: book.title,
         emoji: book.emoji,
     }));
-    console.error("Unknown theme:", themeName);
-    return [];
+
+    console.error("Invalid theme name or missing data for theme:", themeName);
+    return []; // Return an empty array to prevent further errors
 }
 
 /**
  * Initializes the game.
  * @param {object} puzzle - The selected puzzle object.
  */
+/**
+ * Initializes the game.
+ * @param {object} puzzle - The selected puzzle object containing the title and emoji.
+ */
 function initializeGame(puzzle) {
     if (!puzzle || !puzzle.title || !puzzle.emoji) {
         console.error("Invalid puzzle data:", puzzle);
         return;
     }
-    inGameState.guessedLetters = Array(puzzle.title.length).fill(null);
+
+    // Log the initialization process
+    console.log("Initializing puzzle:", puzzle.title);
+
+    // Reset inputs and states for the new puzzle
+    currentInput = Array(puzzle.title.length).fill(null); // Clear all user input slots
+    frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen (correct) letter flags
+    inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Initialize guessed letters
+
+    // Draw the game board (emojis and empty slots)
     drawGameBoard(puzzle.emoji, puzzle.title);
-    startTimer(); // Start the timer (defined in timer.js or script.js)
+
+    // Start the timer for the new puzzle
+    startTimer();
 }
 
+/**
+ * Draws the game board with emojis and letter slots.
+ * @param {string} emojis - The puzzle's emojis.
+ * @param {string} title - The puzzle's title.
+ */
 /**
  * Draws the game board with emojis and letter slots.
  * @param {string} emojis - The puzzle's emojis.
@@ -92,8 +121,9 @@ function drawGameBoard(emojis, title) {
     text(emojis, width / 2, height / 3);
 
     // Draw letter slots for the title
-    const slotWidth = 50;
-    const startX = width / 2 - (title.replace(/\s/g, "").length * slotWidth) / 2;
+    const slotWidth = 50; // Width of each slot
+    const slotHeight = 50; // Height of each slot
+    const startX = width / 2 - (title.replace(/\s/g, "").length * slotWidth) / 2; // Center the slots
     let x = startX;
 
     for (let char of title) {
@@ -101,8 +131,14 @@ function drawGameBoard(emojis, title) {
             x += slotWidth; // Skip spaces
             continue;
         }
-        rect(x, height / 2, 40, 40); // Draw slot
-        x += slotWidth;
+
+        // Draw each slot as a white square with a black border
+        fill(255); // White fill
+        stroke(0); // Black border
+        strokeWeight(2); // Thickness of the border
+        rect(x, height / 2, slotWidth, slotHeight);
+
+        x += slotWidth; // Move to the next slot position
     }
 }
 
@@ -110,23 +146,49 @@ function drawGameBoard(emojis, title) {
  * Handles keyboard input for guessing letters.
  * @param {string} key - The key pressed by the player.
  */
+/**
+ * Handles keyboard input for guessing letters.
+ * @param {string} key - The key pressed by the player.
+ */
 function handleInput(key) {
-    if (!inGameState.puzzle) return; // Ignore input if no puzzle is loaded
+    console.log("Key pressed:", key); // Debugging log
 
-    const normalizedKey = key.toLowerCase();
-    const normalizedTitle = inGameState.puzzle.title.toLowerCase();
+    // Ensure the game is in the gameplay state and a puzzle is loaded
+    if (currentGameState !== GameState.GAMEPLAY) return;
+    if (!inGameState.puzzle) {
+        console.error("No puzzle loaded. Cannot process input.");
+        return;
+    }
 
-    for (let i = 0; i < normalizedTitle.length; i++) {
-        if (normalizedTitle[i] === normalizedKey && !inGameState.guessedLetters[i]) {
-            inGameState.guessedLetters[i] = key;
+    const title = inGameState.puzzle.title; // The solution title
+
+    if (key === "Backspace" || key === "Delete") {
+        // Clear all non-frozen letters
+        console.log("Clearing all non-frozen letters...");
+        for (let i = 0; i < currentInput.length; i++) {
+            if (!frozenLetters[i]) { // Only clear non-frozen slots
+                currentInput[i] = null;
+            }
         }
+    } else if (key === "Enter") {
+        // Handle checking the word
+        console.log("Submitting word for validation...");
+        checkWord(currentInput, title); // Pass currentInput (array) and the solution
+    } else if (key.length === 1 && key.match(/[a-zA-Z]/)) {
+        // Handle letter input
+        console.log(`Handling letter input: ${key}`);
+        for (let i = 0; i < title.length; i++) {
+            if (!currentInput[i] && title[i] !== " ") { // Only fill empty slots
+                currentInput[i] = key.toUpperCase(); // Convert to uppercase for consistency
+                break; // Stop after placing one letter
+            }
+        }
+    } else {
+        console.log("Invalid key input:", key); // Log invalid keys
     }
-    updateBoard(inGameState.guessedLetters, normalizedTitle);
 
-    // Check for win condition
-    if (inGameState.guessedLetters.join("").toLowerCase() === normalizedTitle.replace(/\s/g, "").toLowerCase()) {
-        endGame(true); // Win the game
-    }
+    // Always update the board with the current input
+    updateBoard(currentInput, title, false);
 }
 
 /**
@@ -134,23 +196,46 @@ function handleInput(key) {
  * @param {Array} guesses - The current guessed letters.
  * @param {string} answer - The correct answer.
  */
-function updateBoard(guesses, answer) {
+function updateBoard(guesses, solution, validate = false) {
     const slotWidth = 50;
-    const startX = width / 2 - (answer.replace(/\s/g, '').length * slotWidth) / 2;
+    const slotHeight = 50;
+    const startX = width / 2 - (solution.replace(/\s/g, "").length * slotWidth) / 2;
     let x = startX;
 
-    for (let i = 0; i < answer.length; i++) {
-        if (answer[i] === " ") {
+    for (let i = 0; i < solution.length; i++) {
+        if (solution[i] === " ") {
             x += slotWidth; // Skip spaces
             continue;
         }
+
+        if (validate) {
+            // Mark correct and incorrect letters
+            if (guesses[i]?.toUpperCase() === solution[i].toUpperCase()) {
+                fill(0, 255, 0); // Green for correct
+                frozenLetters[i] = true; // Freeze correct letters
+            } else if (guesses[i]) {
+                fill(255, 0, 0); // Red for incorrect
+            } else {
+                fill(255); // Default white for empty slots
+            }
+        } else {
+            fill(255); // Default white during input
+        }
+
+        // Draw the square
+        stroke(0);
+        strokeWeight(2);
+        rect(x, height / 2, slotWidth, slotHeight);
+
+        // Draw the guessed letter if it exists
         if (guesses[i]) {
             textSize(32);
             textAlign(CENTER, CENTER);
-            fill("black");
-            text(guesses[i], x + 20, height / 2 + 20);
+            fill(0); // Black text
+            text(guesses[i], x + slotWidth / 2, height / 2 + slotHeight / 2);
         }
-        x += slotWidth;
+
+        x += slotWidth; // Move to the next slot
     }
 }
 
@@ -181,4 +266,92 @@ function resetGameState() {
     timerRunning = false;
     lastSecondTime = null; // Reset the time reference
     updateState(GameState.MAIN_MENU); // Transition to main menu
+}
+
+/**
+ * Captures key press events and passes them to the gameplay logic.
+ */
+function keyPressed() {
+    if (key.length === 1 && key.match(/[a-zA-Z]/)) {
+        handleInput(key); // Pass letter inputs
+    } else if (key === "Backspace" || key === "Delete" || key === "Enter") {
+        handleInput(key); // Pass special keys
+    } else {
+        console.log(`Invalid key: ${key}`); // Debugging log for invalid keys
+    }
+}
+
+/**
+ * 
+ * @param {*} userInput 
+ * @param {*} solution 
+ * @returns 
+ */
+function checkWord(userInput, solution) {
+    // Ensure userInput is an array
+    if (!Array.isArray(userInput)) {
+        console.error("Invalid userInput: Expected an array, received:", userInput);
+        return;
+    }
+
+    // Log user input and solution for debugging
+    console.log("User Input (raw):", userInput);
+    console.log("Solution (raw):", solution);
+
+    // Remove null values from userInput and join the characters into a string
+    const trimmedInput = userInput.filter((char) => char !== null).join("");
+
+    // Remove spaces from the solution for proper comparison
+    const trimmedSolution = solution.replace(/\s/g, "");
+
+    console.log("Filtered User Input:", trimmedInput);
+    console.log("Filtered Solution:", trimmedSolution);
+
+    // Check if the lengths match
+    if (!trimmedInput || trimmedInput.length !== trimmedSolution.length) {
+        console.log("Invalid input length: Input and solution lengths do not match.");
+        return;
+    }
+
+    let isWordCorrect = true; // Flag to check if the entire word is correct
+
+    // Validate each letter
+    for (let i = 0; i < trimmedSolution.length; i++) {
+        if (trimmedSolution[i].toLowerCase() === trimmedInput[i]?.toLowerCase()) {
+            frozenLetters[i] = true; // Freeze correct letters
+        } else {
+            isWordCorrect = false; // Mark word as incorrect if any letter is wrong
+        }
+    }
+
+    // Update the board to display validation colors
+    console.log("Validating word input...");
+    updateBoard(userInput, solution, true); // `validate` is true to show green/red colors
+
+    // Check if the word is completely correct
+    if (isWordCorrect) {
+        console.log("Correct word guessed! Moving to the next puzzle.");
+        loadNextPuzzle(); // Load the next puzzle
+    } else {
+        console.log("Incorrect word. Please try again.");
+    }
+}
+
+function loadNextPuzzle() {
+    const puzzles = extractPuzzles(inGameState.puzzleData, inGameState.theme);
+
+    // Find the next puzzle index
+    const currentIndex = puzzles.findIndex(
+        (puzzle) => puzzle.title === inGameState.puzzle.title
+    );
+
+    if (currentIndex + 1 < puzzles.length) {
+        // Move to the next puzzle
+        inGameState.puzzle = puzzles[currentIndex + 1];
+        initializeGame(inGameState.puzzle);
+    } else {
+        // If no puzzles are left, end the game or restart
+        console.log("All puzzles completed! Returning to theme lobby.");
+        endGame(true);
+    }
 }
