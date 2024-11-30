@@ -17,6 +17,7 @@ let frozenLetters = Array(inGameState.puzzle?.title.length).fill(false); // Trac
  * Loads the selected theme's JSON file.
  * @param {string} themeName - The selected theme.
  */
+
 function loadTheme(themeName) {
     fetch(`assets/data/${themeName}.json`)
         .then(response => {
@@ -31,6 +32,7 @@ function loadTheme(themeName) {
                 throw new Error("No valid puzzles found in the theme data.");
             }
             inGameState.theme = themeName;
+            inGameState.puzzleData = puzzles; // Store all puzzles for skipping
             inGameState.puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
             initializeGame(inGameState.puzzle);
         })
@@ -79,36 +81,33 @@ function extractPuzzles(data, themeName) {
  * Initializes the game.
  * @param {object} puzzle - The selected puzzle object.
  */
-/**
- * Initializes the game.
- * @param {object} puzzle - The selected puzzle object containing the title and emoji.
- */
 function initializeGame(puzzle) {
+    // Validate the puzzle object
     if (!puzzle || !puzzle.title || !puzzle.emoji) {
         console.error("Invalid puzzle data:", puzzle);
         return;
     }
 
-    // Log the initialization process
     console.log("Initializing puzzle:", puzzle.title);
 
-    // Reset inputs and states for the new puzzle
-    currentInput = Array(puzzle.title.length).fill(null); // Clear all user input slots
-    frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen (correct) letter flags
-    inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Initialize guessed letters
+    // Reset game inputs for the new puzzle
+    currentInput = Array(puzzle.title.length).fill(null); // Clear user input
+    frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen letters
+    inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Reset guessed letters
 
-    // Draw the game board (emojis and empty slots)
+    // Stop and restart the timer
+    stopTimer(); // Stop any existing timer
+    startTimer(); // Start the timer for the new puzzle
+
+    // Draw the game board with emojis and slots
     drawGameBoard(puzzle.emoji, puzzle.title);
 
-    // Start the timer for the new puzzle
-    startTimer();
+    // Add the Skip button (if it doesn't already exist)
+    if (!document.getElementById("skipButton")) {
+        addSkipButton();
+    }
 }
 
-/**
- * Draws the game board with emojis and letter slots.
- * @param {string} emojis - The puzzle's emojis.
- * @param {string} title - The puzzle's title.
- */
 /**
  * Draws the game board with emojis and letter slots.
  * @param {string} emojis - The puzzle's emojis.
@@ -257,18 +256,17 @@ function updateBoard(guesses, solution, validate = false) {
 }
 
 /**
- * Ends the game with a message.
- * @param {boolean} won - Whether the player won or lost.
+ * Ends the game when all puzzles are completed.
+ * @param {boolean} won - Whether the player successfully completed the puzzles.
  */
 function endGame(won) {
-    stopTimer(); // Stop the timer (defined in timer.js or script.js)
-
+    stopTimer(); // Stop the timer
     const message = won
-        ? "You Win! 🎉"
-        : `Time's up! The correct answer was: ${inGameState.puzzle.title}`;
+        ? "You completed all puzzles! 🎉"
+        : `The correct answer was: ${inGameState.puzzle.title}`;
     alert(message);
 
-    // Reset game state and return to the theme lobby
+    // Reset state and return to the theme lobby
     resetGameState();
     updateState(GameState.THEME_LOBBY);
 }
@@ -282,6 +280,10 @@ function resetGameState() {
     inGameState.guessedLetters = [];
     timerRunning = false;
     lastSecondTime = null; // Reset the time reference
+
+    // Remove the Skip button when leaving the game state
+    removeSkipButton();
+
     updateState(GameState.MAIN_MENU); // Transition to main menu
 }
 
@@ -299,9 +301,9 @@ function keyPressed() {
 }
 
 /**
- * 
- * @param {*} userInput 
- * @param {*} solution 
+ * Check the input state of the word
+ * @param {array} userInput 
+ * @param {string} solution 
  * @returns 
  */
 function checkWord(userInput, solution) {
@@ -354,21 +356,85 @@ function checkWord(userInput, solution) {
     }
 }
 
+/**
+ * Loads the next puzzle in sequence or returns to the theme lobby.
+ */
 function loadNextPuzzle() {
-    const puzzles = extractPuzzles(inGameState.puzzleData, inGameState.theme);
+    const puzzles = inGameState.puzzleData;
 
-    // Find the next puzzle index
-    const currentIndex = puzzles.findIndex(
-        (puzzle) => puzzle.title === inGameState.puzzle.title
-    );
+    if (!puzzles || puzzles.length === 0) {
+        console.error("No puzzles available.");
+        return;
+    }
 
-    if (currentIndex + 1 < puzzles.length) {
-        // Move to the next puzzle
-        inGameState.puzzle = puzzles[currentIndex + 1];
-        initializeGame(inGameState.puzzle);
-    } else {
-        // If no puzzles are left, end the game or restart
-        console.log("All puzzles completed! Returning to theme lobby.");
-        endGame(true);
+    // Find the current puzzle index
+    const currentIndex = puzzles.findIndex(p => p.title === inGameState.puzzle.title);
+
+    // Move to the next puzzle or wrap around
+    const nextIndex = (currentIndex + 1) % puzzles.length;
+
+    // Set the next puzzle as the current one
+    inGameState.puzzle = puzzles[nextIndex];
+
+    // Reinitialize the game with the new puzzle
+    initializeGame(inGameState.puzzle);
+}
+
+/**
+ * Skips the current puzzle and moves to the next.
+ */
+function skipPuzzle() {
+    console.log("Skipping to the next puzzle...");
+
+    // Stop the timer for the current puzzle
+    stopTimer();
+
+    // Reset the game state variables
+    currentInput = [];
+    frozenLetters = [];
+    inGameState.guessedLetters = [];
+
+    // Load the next puzzle
+    loadNextPuzzle();
+
+    // Ensure the skip button stays available
+    if (!document.getElementById("skipButton")) {
+        addSkipButton();
+    }
+}
+
+/**
+ * Adds a Skip button to the game.
+ */
+function addSkipButton() {
+    if (document.getElementById("skipButton")) return; // Skip if already added
+
+    const skipButton = document.createElement("button");
+    skipButton.id = "skipButton";
+    skipButton.textContent = "Skip Puzzle";
+    skipButton.style.position = "absolute";
+    skipButton.style.top = "10px";
+    skipButton.style.right = "10px";
+    skipButton.style.padding = "10px 20px";
+    skipButton.style.fontSize = "16px";
+    skipButton.style.backgroundColor = "#f04";
+    skipButton.style.color = "white";
+    skipButton.style.border = "none";
+    skipButton.style.borderRadius = "5px";
+    skipButton.style.cursor = "pointer";
+    skipButton.style.zIndex = "1000";
+
+    skipButton.addEventListener("click", skipPuzzle);
+
+    document.body.appendChild(skipButton);
+}
+
+/**
+ * Removes the Skip button from the game.
+ */
+function removeSkipButton() {
+    const skipButton = document.getElementById("skipButton");
+    if (skipButton) {
+        skipButton.remove();
     }
 }
