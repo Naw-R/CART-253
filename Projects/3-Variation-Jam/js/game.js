@@ -143,58 +143,75 @@ function drawGameBoard(emojis, title) {
 }
 
 /**
- * Handles keyboard input for guessing letters.
- * @param {string} key - The key pressed by the player.
- */
-/**
- * Handles keyboard input for guessing letters.
+ * Handles input from the player.
  * @param {string} key - The key pressed by the player.
  */
 function handleInput(key) {
-    console.log("Key pressed:", key); // Debugging log
-
-    // Ensure the game is in the gameplay state and a puzzle is loaded
-    if (currentGameState !== GameState.GAMEPLAY) return;
-    if (!inGameState.puzzle) {
-        console.error("No puzzle loaded. Cannot process input.");
+    // Validate game state and puzzle existence
+    if (!inGameState.puzzle || currentGameState !== GameState.GAMEPLAY) {
+        console.error("Invalid state for input.");
         return;
     }
 
-    const title = inGameState.puzzle.title; // The solution title
+    // Delegate input handling based on key type
+    dispatchInput(key);
 
-    if (key === "Backspace" || key === "Delete") {
-        // Clear all non-frozen letters
-        console.log("Clearing all non-frozen letters...");
-        for (let i = 0; i < currentInput.length; i++) {
-            if (!frozenLetters[i]) { // Only clear non-frozen slots
-                currentInput[i] = null;
-            }
-        }
-    } else if (key === "Enter") {
-        // Handle checking the word
-        console.log("Submitting word for validation...");
-        checkWord(currentInput, title); // Pass currentInput (array) and the solution
-    } else if (key.length === 1 && key.match(/[a-zA-Z]/)) {
-        // Handle letter input
-        console.log(`Handling letter input: ${key}`);
-        for (let i = 0; i < title.length; i++) {
-            if (!currentInput[i] && title[i] !== " ") { // Only fill empty slots
-                currentInput[i] = key.toUpperCase(); // Convert to uppercase for consistency
-                break; // Stop after placing one letter
-            }
-        }
-    } else {
-        console.log("Invalid key input:", key); // Log invalid keys
-    }
-
-    // Always update the board with the current input
-    updateBoard(currentInput, title, false);
+    // Always update the board after processing input
+    updateBoard(currentInput, inGameState.puzzle.title, false);
 }
+
+/**
+ * Delegates the input handling to the appropriate function.
+ * @param {string} key - The key pressed by the player.
+ */
+function dispatchInput(key) {
+    if (key === "Backspace" || key === "Delete") {
+        handleBackspace();
+    } else if (key === "Enter") {
+        handleEnter();
+    } else if (key.length === 1 && key.match(/[a-zA-Z]/)) {
+        handleLetterInput(key);
+    } else {
+        console.log("Invalid key:", key);
+    }
+}
+
+/**
+ * Handles Backspace/Delete input to clear non-frozen letters.
+ */
+function handleBackspace() {
+    currentInput = currentInput.map((char, i) => (frozenLetters[i] ? char : null));
+    console.log("Cleared all non-frozen letters.");
+}
+
+/**
+ * Handles Enter input to validate the word.
+ */
+function handleEnter() {
+    console.log("Submitting word for validation...");
+    checkWord(currentInput, inGameState.puzzle.title); // Pass current input and solution
+}
+
+/**
+ * Handles letter input to populate the next available slot.
+ * @param {string} letter - The letter pressed by the player.
+ */
+function handleLetterInput(letter) {
+    console.log(`Handling letter input: ${letter}`);
+    for (let i = 0; i < currentInput.length; i++) {
+        if (!currentInput[i] && inGameState.puzzle.title[i] !== " ") { // Skip spaces
+            currentInput[i] = letter.toUpperCase(); // Convert to uppercase for consistency
+            break; // Stop after placing one letter
+        }
+    }
+}
+
 
 /**
  * Updates the game board with the player's guesses.
  * @param {Array} guesses - The current guessed letters.
- * @param {string} answer - The correct answer.
+ * @param {string} solution - The correct answer.
+ * @param {boolean} validate - Whether to validate guesses (green/red feedback).
  */
 function updateBoard(guesses, solution, validate = false) {
     const slotWidth = 50;
