@@ -104,7 +104,7 @@ function initializeGame(puzzle) {
     // Draw the game board with emojis and slots
     drawGameBoard(puzzle.emoji, puzzle.title);
 
-    // Add the Hint button (if it doesn't already exist)
+    // Add the Hint button (only in gameplay mode)
     if (!document.getElementById("hintButton")) {
         addHintButton();
     } else {
@@ -296,6 +296,9 @@ function resetGameState() {
 
     // Remove the Skip button when leaving the game state
     removeSkipButton();
+
+    // Remove the Hint button when leaving the game state
+    removeHintButton();
 
     updateState(GameState.MAIN_MENU); // Transition to main menu
 }
@@ -489,6 +492,16 @@ function addHintButton() {
     });
 
     document.body.appendChild(hintButton);
+}
+
+/**
+ * Removes the Hint button from the game.
+ */
+function removeHintButton() {
+    const hintButton = document.getElementById("hintButton");
+    if (hintButton) {
+        hintButton.remove();
+    }
 }
 
 /**

@@ -90,16 +90,35 @@ function draw() {
  */
 function updateState(newState) {
     console.log(`State transitioning from ${currentGameState} to ${newState}`);
+
+    // Update the global game state
     currentGameState = newState;
+
+    // Clear the canvas and reset all buttons/UI elements
     clearCanvas();
     clearButtons();
 
-    if (newState === GameState.MAIN_MENU) {
-        renderMainMenu();
-    } else if (newState === GameState.THEME_LOBBY) {
-        renderThemeLobby();
-    } else if (newState === GameState.GAMEPLAY) {
-        startGameplay(); // Initialize gameplay state
+    // Remove the Skip and Hint buttons when leaving gameplay
+    removeSkipButton();
+    removeHintButton();
+
+    // Handle transitions based on the new state
+    switch (newState) {
+        case GameState.MAIN_MENU:
+            renderMainMenu(); // Render the main menu
+            break;
+
+        case GameState.THEME_LOBBY:
+            renderThemeLobby(); // Render the theme selection screen
+            break;
+
+        case GameState.GAMEPLAY:
+            startGameplay(); // Initialize the gameplay state
+            break;
+
+        default:
+            console.error(`Unknown game state: ${newState}`);
+            break;
     }
 }
 
@@ -195,9 +214,6 @@ function startGameplay() {
 /**
  * Renders the gameplay UI with the timer, theme title, and puzzle.
  */
-/**
- * Renders the gameplay UI with the timer, theme title, and puzzle.
- */
 function renderGameplay() {
     // Display timer
     textSize(24);
@@ -222,6 +238,8 @@ function renderGameplay() {
         backButton.size(200, 40);
         backButton.mousePressed(() => {
             timerRunning = false; // Stop the timer
+            removeSkipButton(); // Remove the Skip button
+            removeHintButton(); // Remove the Hint button
             updateState(GameState.MAIN_MENU); // Go back to the main menu
         });
     }
@@ -255,18 +273,25 @@ function playBackgroundMusic() {
 function clearButtons() {
     themeButtons.forEach(button => button.remove());
     themeButtons = [];
+
     if (startButton) {
         startButton.remove();
         startButton = null;
     }
+
     if (backButton) {
         backButton.remove();
         backButton = null;
     }
+
     if (muteButton) {
         muteButton.remove();
         muteButton = null;
     }
+
+    // Also remove Skip and Hint buttons
+    removeSkipButton();
+    removeHintButton();
 }
 
 /**
