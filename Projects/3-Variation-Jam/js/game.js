@@ -8,6 +8,8 @@ const inGameState = {
     theme: null,           // Selected theme
     puzzle: null,          // The puzzle object (e.g., title and emoji)
     guessedLetters: [],    // Array to track guessed letters
+    hintsUsed: 0           // Tracks the number of hints used
+
 };
 
 let currentInput = []; // Tracks the user's current input
@@ -82,7 +84,6 @@ function extractPuzzles(data, themeName) {
  * @param {object} puzzle - The selected puzzle object.
  */
 function initializeGame(puzzle) {
-    // Validate the puzzle object
     if (!puzzle || !puzzle.title || !puzzle.emoji) {
         console.error("Invalid puzzle data:", puzzle);
         return;
@@ -94,6 +95,7 @@ function initializeGame(puzzle) {
     currentInput = Array(puzzle.title.length).fill(null); // Clear user input
     frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen letters
     inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Reset guessed letters
+    inGameState.hintsUsed = 0; // Reset the hint counter
 
     // Stop and restart the timer
     stopTimer(); // Stop any existing timer
@@ -101,6 +103,17 @@ function initializeGame(puzzle) {
 
     // Draw the game board with emojis and slots
     drawGameBoard(puzzle.emoji, puzzle.title);
+
+    // Add the Hint button (if it doesn't already exist)
+    if (!document.getElementById("hintButton")) {
+        addHintButton();
+    } else {
+        const hintButton = document.getElementById("hintButton");
+        hintButton.disabled = false; // Re-enable the button
+        hintButton.style.backgroundColor = "#007BFF"; // Reset color
+        hintButton.style.cursor = "pointer";
+        hintButton.textContent = "Hint"; // Reset text
+    }
 
     // Add the Skip button (if it doesn't already exist)
     if (!document.getElementById("skipButton")) {
@@ -436,5 +449,109 @@ function removeSkipButton() {
     const skipButton = document.getElementById("skipButton");
     if (skipButton) {
         skipButton.remove();
+    }
+}
+
+/**
+ * Adds a Hint button to the game.
+ */
+function addHintButton() {
+    if (document.getElementById("hintButton")) return; // Avoid adding duplicate buttons
+
+    const hintButton = document.createElement("button");
+    hintButton.id = "hintButton";
+    hintButton.textContent = "Hint";
+    hintButton.style.position = "absolute";
+    hintButton.style.bottom = "150px"; // Position above the "Return to Menu" button
+    hintButton.style.left = "50%"; // Center horizontally
+    hintButton.style.transform = "translateX(-50%)"; // Center adjustment
+    hintButton.style.padding = "10px 20px";
+    hintButton.style.fontSize = "16px";
+    hintButton.style.backgroundColor = "#007BFF"; // Blue for visibility
+    hintButton.style.color = "white";
+    hintButton.style.border = "none";
+    hintButton.style.borderRadius = "5px";
+    hintButton.style.cursor = "pointer";
+    hintButton.style.zIndex = "1000";
+
+    // Add event listener to trigger hint reveal
+    hintButton.addEventListener("click", () => {
+        if (inGameState.hintsUsed < 3) {
+            revealHint();
+            inGameState.hintsUsed++;
+            if (inGameState.hintsUsed >= 3) {
+                hintButton.disabled = true;
+                hintButton.style.backgroundColor = "gray"; // Disable visual feedback
+                hintButton.style.cursor = "not-allowed";
+                hintButton.textContent = "No more hints";
+            }
+        }
+    });
+
+    document.body.appendChild(hintButton);
+}
+
+/**
+ * Reveals a hint for the current puzzle.
+ */
+function revealHint() {
+    if (!inGameState.puzzle) {
+        console.error("No puzzle loaded to reveal a hint.");
+        return;
+    }
+
+    let hintMessage = "";
+
+    // Provide a hint based on the theme
+    switch (inGameState.theme) {
+        case "movies":
+        case "books":
+            if (inGameState.puzzle.author) {
+                hintMessage = `Hint: Author - ${inGameState.puzzle.author}`;
+            } else {
+                hintMessage = "Hint: No author available for this puzzle.";
+            }
+            break;
+        case "songs":
+            hintMessage = `Hint: Artist - ${inGameState.puzzle.artist || "Unknown"}`;
+            break;
+        case "countries":
+            hintMessage = `Hint: ${inGameState.puzzle.emoji}`;
+            break;
+        case "tv":
+        case "brands":
+            hintMessage = "Hint: Think harder, no specific hint available!";
+            break;
+        default:
+            hintMessage = "Hint: No hint available for this theme.";
+            break;
+    }
+
+    // Display the hint in the console or log instead of an alert
+    console.log(hintMessage);
+
+    // Optionally, reveal one letter of the title
+    revealOneLetter();
+}
+
+/**
+ * Reveals one random unrevealed letter in the puzzle title.
+ */
+function revealOneLetter() {
+    const solution = inGameState.puzzle.title;
+    const availableIndices = solution
+        .split("")
+        .map((char, i) => (currentInput[i] === null && char !== " " ? i : null))
+        .filter(index => index !== null);
+
+    if (availableIndices.length > 0) {
+        const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+        currentInput[randomIndex] = solution[randomIndex].toUpperCase(); // Reveal the letter
+        frozenLetters[randomIndex] = true; // Freeze it as a correct letter
+
+        // Update the board to reflect the revealed letter
+        updateBoard(currentInput, solution, false);
+    } else {
+        console.log("No letters left to reveal.");
     }
 }
