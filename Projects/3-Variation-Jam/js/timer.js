@@ -8,29 +8,33 @@
  * Starts the timer.
  */
 function startTimer() {
-    timer = 60; // Reset timer to 60 seconds
-    lastSecondTime = millis(); // Record the start time
     timerRunning = true; // Enable the timer
+    lastSecondTime = millis(); // Record the starting time
+    timer = 60; // Reset to the default 60 seconds (or use puzzle-specific time if needed)
+    console.log("Timer started!");
 }
 
 /**
- * Updates the timer every second.
- */
-/**
- * Updates the timer and handles timeout logic.
+ * Updates the timer countdown logic and triggers game over when time runs out.
  */
 function updateTimer() {
-    if (timerRunning) {
-        const currentTime = millis();
-        if (currentTime - lastSecondTime >= 1000) { // Check if 1 second has passed
-            timer--; // Decrement the timer
-            lastSecondTime = currentTime; // Update lastSecondTime
-        }
+    if (!timerRunning) return; // Exit if the timer is not active
+
+    const currentTime = millis();
+    if (currentTime - lastSecondTime >= 1000) { // Check if 1 second has passed
+        timer--; // Decrement the timer
+        lastSecondTime = currentTime; // Update the last recorded time
+
+        // Handle timer running out
         if (timer <= 0) {
+            console.log("Time's up!");
             timerRunning = false; // Stop the timer
-            endGame(false); // Trigger game over (loss)
+            gameOver(); // Trigger game over logic
         }
     }
+
+    // Update the visual representation of the timer
+    drawTimerBar(timer);
 }
 
 /**
@@ -81,11 +85,52 @@ function resetTimer() {
 }
 
 /**
-
  * Stops the timer.
  */
 function stopTimer() {
     timerRunning = false; // Disable the timer
-    console.log("Timer stopped."); // Log for debugging purposes
+    console.log("Timer stopped!");
 }
 
+/**
+ * Handles the logic when the timer runs out.
+ */
+function gameOver() {
+    console.log("Game Over! Timer ran out.");
+
+    // End the current puzzle
+    timerRunning = false; // Ensure the timer is stopped
+    alert(`Time's up! The correct answer was: ${inGameState.puzzle.title}`);
+
+    // Transition to the next puzzle or theme lobby
+    loadNextPuzzle(); // Move to the next puzzle
+}
+
+/**
+ * Draws the timer bar and numerical display.
+ * @param {number} remainingTime - The remaining time in seconds.
+ */
+function drawTimerBar(remainingTime) {
+    const timerProgress = map(remainingTime, 0, 60, 0, 1); // Map timer to a 0-1 range
+    let timerColor;
+
+    if (remainingTime > 20) {
+        timerColor = color(0, 255, 0); // Green
+    } else if (remainingTime > 10) {
+        timerColor = color(255, 165, 0); // Orange
+    } else {
+        timerColor = color(255, 0, 0); // Red
+    }
+
+    // Draw the timer bar visually
+    noStroke();
+    fill(timerColor);
+    const timerWidth = width * timerProgress; // Adjust bar width based on time remaining
+    rect(20, 2, timerWidth, 10, 20); // Draw the timer bar at the top of the screen
+
+    // Draw numerical time
+    textSize(24);
+    fill(0);
+    textAlign(RIGHT, TOP);
+    text(`Time: ${remainingTime}s`, width - 20, 20);
+}
