@@ -8,8 +8,8 @@ const inGameState = {
     theme: null,           // Selected theme
     puzzle: null,          // The puzzle object (e.g., title and emoji)
     guessedLetters: [],    // Array to track guessed letters
-    hintsUsed: 0           // Tracks the number of hints used
-
+    hintsUsed: 0,          // Tracks the number of hints used
+    score: 0               // Initialize score
 };
 
 let currentInput = []; // Tracks the user's current input
@@ -97,6 +97,9 @@ function initializeGame(puzzle) {
     inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Reset guessed letters
     inGameState.hintsUsed = 0; // Reset the hint counter
 
+    // Start with 0 score for a new game session if needed
+    if (!inGameState.score) inGameState.score = 0;
+
     // Stop and restart the timer
     stopTimer(); // Stop any existing timer
     startTimer(); // Start the timer for the new puzzle
@@ -104,21 +107,9 @@ function initializeGame(puzzle) {
     // Draw the game board with emojis and slots
     drawGameBoard(puzzle.emoji, puzzle.title);
 
-    // Add the Hint button (only in gameplay mode)
-    if (!document.getElementById("hintButton")) {
-        addHintButton();
-    } else {
-        const hintButton = document.getElementById("hintButton");
-        hintButton.disabled = false; // Re-enable the button
-        hintButton.style.backgroundColor = "#007BFF"; // Reset color
-        hintButton.style.cursor = "pointer";
-        hintButton.textContent = "Hint"; // Reset text
-    }
-
-    // Add the Skip button (if it doesn't already exist)
-    if (!document.getElementById("skipButton")) {
-        addSkipButton();
-    }
+    // Add buttons (Hint and Skip)
+    addHintButton();
+    addSkipButton();
 }
 
 /**
@@ -234,27 +225,30 @@ function updateBoard(guesses, solution, validate = false) {
 
     for (let i = 0; i < solution.length; i++) {
         if (solution[i] === " ") {
-            x += slotWidth; // Skip spaces
+            x += slotWidth;
             continue;
         }
 
-        // Draw the square
         fill(255);
         stroke(0);
         strokeWeight(2);
         rect(x, height / 2, slotWidth, slotHeight);
 
-        // Draw the guessed letter if it exists
         if (guesses[i]) {
             textSize(32);
             textAlign(CENTER, CENTER);
-            fill(0); // Black text
+            fill(0);
             text(guesses[i], x + slotWidth / 2, height / 2 + slotHeight / 2);
         }
 
-        x += slotWidth; // Move to the next slot
-        
+        x += slotWidth;
     }
+
+    //Display the score
+    textSize(24);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(`Score: ${inGameState.score}`, window.innerWidth/2, 100);
 }
 
 /**
@@ -262,13 +256,12 @@ function updateBoard(guesses, solution, validate = false) {
  * @param {boolean} won - Whether the player successfully completed the puzzles.
  */
 function endGame(won) {
-    stopTimer(); // Stop the timer
+    stopTimer();
     const message = won
-        ? "You completed all puzzles! 🎉"
-        : `The correct answer was: ${inGameState.puzzle.title}`;
+        ? `You completed all puzzles! 🎉 Final Score: ${inGameState.score}`
+        : `The correct answer was: ${inGameState.puzzle.title}\nFinal Score: ${inGameState.score}`;
     alert(message);
 
-    // Reset state and return to the theme lobby
     resetGameState();
     updateState(GameState.THEME_LOBBY);
 }
@@ -312,54 +305,42 @@ function keyPressed() {
  * @returns 
  */
 function checkWord(userInput, solution) {
-    // Ensure userInput is an array
     if (!Array.isArray(userInput)) {
         console.error("Invalid userInput: Expected an array, received:", userInput);
         return;
     }
 
-    // Log user input and solution for debugging
-    console.log("User Input (raw):", userInput);
-    console.log("Solution (raw):", solution);
-
-    // Remove null values from userInput and join the characters into a string
     const trimmedInput = userInput.filter((char) => char !== null).join("");
-
-    // Remove spaces from the solution for proper comparison
     const trimmedSolution = solution.replace(/\s/g, "");
 
-    console.log("Filtered User Input:", trimmedInput);
-    console.log("Filtered Solution:", trimmedSolution);
-
-    // Check if the lengths match
     if (!trimmedInput || trimmedInput.length !== trimmedSolution.length) {
         console.log("Invalid input length: Input and solution lengths do not match.");
         return;
     }
 
-    let isWordCorrect = true; // Flag to check if the entire word is correct
+    let isWordCorrect = true;
 
-    // Validate each letter
+    // Validate each letter and update the score for correct letters
     for (let i = 0; i < trimmedSolution.length; i++) {
         if (trimmedSolution[i].toLowerCase() === trimmedInput[i]?.toLowerCase()) {
-            frozenLetters[i] = true; // Freeze correct letters
+            frozenLetters[i] = true;
+            inGameState.score += 10; // Add 10 points per correct letter
         } else {
-            isWordCorrect = false; // Mark word as incorrect if any letter is wrong
+            isWordCorrect = false;
         }
     }
 
-    // Update the board to display validation colors
-    console.log("Validating word input...");
-    updateBoard(userInput, solution, true); // `validate` is true to show green/red colors
+    updateBoard(userInput, solution, true);
 
-    // Check if the word is completely correct
     if (isWordCorrect) {
         console.log("Correct word guessed! Moving to the next puzzle.");
-        loadNextPuzzle(); // Load the next puzzle
+        inGameState.score += 50; // Add a bonus for solving the puzzle
+        loadNextPuzzle();
     } else {
         console.log("Incorrect word. Please try again.");
     }
 }
+
 
 /**
  * Loads the next puzzle in sequence or returns to the theme lobby.
@@ -390,22 +371,15 @@ function loadNextPuzzle() {
  */
 function skipPuzzle() {
     console.log("Skipping to the next puzzle...");
+    inGameState.score -= 20; // Deduct points for skipping
 
-    // Stop the timer for the current puzzle
     stopTimer();
-
-    // Reset the game state variables
     currentInput = [];
     frozenLetters = [];
     inGameState.guessedLetters = [];
 
-    // Load the next puzzle
     loadNextPuzzle();
-
-    // Ensure the skip button stays available
-    if (!document.getElementById("skipButton")) {
-        addSkipButton();
-    }
+    addSkipButton();
 }
 
 /**
@@ -504,15 +478,12 @@ function revealHint() {
 
     let hintMessage = "";
 
-    // Provide a hint based on the theme
     switch (inGameState.theme) {
         case "movies":
         case "books":
-            if (inGameState.puzzle.author) {
-                hintMessage = `Hint: Author - ${inGameState.puzzle.author}`;
-            } else {
-                hintMessage = "Hint: No author available for this puzzle.";
-            }
+            hintMessage = inGameState.puzzle.author
+                ? `Hint: Author - ${inGameState.puzzle.author}`
+                : "Hint: No author available.";
             break;
         case "songs":
             hintMessage = `Hint: Artist - ${inGameState.puzzle.artist || "Unknown"}`;
@@ -520,19 +491,13 @@ function revealHint() {
         case "countries":
             hintMessage = `Hint: ${inGameState.puzzle.emoji}`;
             break;
-        case "tv":
-        case "brands":
-            hintMessage = "Hint: Think harder, no specific hint available!";
-            break;
         default:
-            hintMessage = "Hint: No hint available for this theme.";
-            break;
+            hintMessage = "Hint: No hint available.";
     }
 
-    // Display the hint in the console or log instead of an alert
     console.log(hintMessage);
 
-    // Optionally, reveal one letter of the title
+    inGameState.score -= 15; // Deduct points for using a hint
     revealOneLetter();
 }
 
