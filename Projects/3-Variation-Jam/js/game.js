@@ -151,6 +151,7 @@ function drawGameBoard(emojis, title) {
         rect(x, height / 2, slotWidth, slotHeight);
 
         x += slotWidth; // Move to the next slot position
+
     }
 }
 
@@ -237,21 +238,8 @@ function updateBoard(guesses, solution, validate = false) {
             continue;
         }
 
-        if (validate) {
-            // Mark correct and incorrect letters
-            if (guesses[i]?.toUpperCase() === solution[i].toUpperCase()) {
-                fill(0, 255, 0); // Green for correct
-                frozenLetters[i] = true; // Freeze correct letters
-            } else if (guesses[i]) {
-                fill(255, 0, 0); // Red for incorrect
-            } else {
-                fill(255); // Default white for empty slots
-            }
-        } else {
-            fill(255); // Default white during input
-        }
-
         // Draw the square
+        fill(255);
         stroke(0);
         strokeWeight(2);
         rect(x, height / 2, slotWidth, slotHeight);
@@ -265,6 +253,7 @@ function updateBoard(guesses, solution, validate = false) {
         }
 
         x += slotWidth; // Move to the next slot
+        
     }
 }
 

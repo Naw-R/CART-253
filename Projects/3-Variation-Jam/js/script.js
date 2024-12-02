@@ -46,9 +46,6 @@ function setup() {
 /**
  * Main draw loop to render UI based on the current game state.
  */
-/**
- * Main draw loop to render UI based on the current game state.
- */
 function draw() {
     // Clear the canvas for the current frame
     clearCanvas();
