@@ -117,6 +117,7 @@ function updateState(newState) {
             console.error(`Unknown game state: ${newState}`);
             break;
     }
+    
 }
 
 /**

@@ -9,7 +9,8 @@ const inGameState = {
     puzzle: null,          // The puzzle object (e.g., title and emoji)
     guessedLetters: [],    // Array to track guessed letters
     hintsUsed: 0,          // Tracks the number of hints used
-    score: 0               // Initialize score
+    score: 0,              // Initialize score
+    roundCount: 0,         // Tracks the number of rounds played
 };
 
 let currentInput = []; // Tracks the user's current input
@@ -91,14 +92,20 @@ function initializeGame(puzzle) {
 
     console.log("Initializing puzzle:", puzzle.title);
 
+    // Increment the round counter
+    inGameState.roundCount++;
+
+    // Check if round limit is reached
+    if (inGameState.roundCount > 10) {
+        endGame(true); // End the game, passing "true" to indicate completion
+        return;
+    }
+
     // Reset game inputs for the new puzzle
     currentInput = Array(puzzle.title.length).fill(null); // Clear user input
     frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen letters
     inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Reset guessed letters
     inGameState.hintsUsed = 0; // Reset the hint counter
-
-    // Start with 0 score for a new game session if needed
-    if (!inGameState.score) inGameState.score = 0;
 
     // Stop and restart the timer
     stopTimer(); // Stop any existing timer
@@ -257,24 +264,28 @@ function updateBoard(guesses, solution, validate = false) {
  */
 function endGame(won) {
     stopTimer();
+
     const message = won
-        ? `You completed all puzzles! 🎉 Final Score: ${inGameState.score}`
+        ? `You completed 10 rounds! 🎉 Final Score: ${inGameState.score}`
         : `The correct answer was: ${inGameState.puzzle.title}\nFinal Score: ${inGameState.score}`;
+
     alert(message);
 
     resetGameState();
-    updateState(GameState.THEME_LOBBY);
+    updateState(GameState.THEME_LOBBY); // Return to theme selection
 }
 
 /**
  * Resets the in-game state.
  */
 function resetGameState() {
-    inGameState.theme = null;
-    inGameState.puzzle = null;
-    inGameState.guessedLetters = [];
-    timerRunning = false;
-    lastSecondTime = null; // Reset the time reference
+    inGameState.theme = null;        // Clear the selected theme
+    inGameState.puzzle = null;       // Clear the current puzzle
+    inGameState.guessedLetters = []; // Clear guessed letters
+    inGameState.roundCount = 0;      // Reset the round counter
+    inGameState.score = 0;           // Reset the score
+    timerRunning = false;            // Stop the timer
+    lastSecondTime = null;           // Reset the time reference
 
     // Remove the Skip button when leaving the game state
     removeSkipButton();
@@ -346,6 +357,11 @@ function checkWord(userInput, solution) {
  * Loads the next puzzle in sequence or returns to the theme lobby.
  */
 function loadNextPuzzle() {
+    if (inGameState.roundCount >= 10) {
+        endGame(true); // End the game, passing "true" to indicate completion
+        return;
+    }
+
     const puzzles = inGameState.puzzleData;
 
     if (!puzzles || puzzles.length === 0) {
