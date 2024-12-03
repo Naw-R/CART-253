@@ -8,9 +8,7 @@
  * - renderMainMenu(): Displays the main menu with theme options and a mute button.
  * - createThemeButton(label, y, onClick): Dynamically creates buttons for theme selection.
  * - clearButtons(): Clears all buttons and UI elements from the screen.
- * - toggleBackgroundMusic(): Toggles background music on or off.
  * - createMuteButton(): Creates a button to mute or unmute the background music.
- * - playBackgroundMusic(): Ensures background music is playing.
  * - selectTheme(theme): Handles theme selection and transitions to the theme lobby.
  */
 
@@ -18,7 +16,7 @@
 let menuButtons = [];
 
 /**
- * Renders the main menu with theme options and a mute button.
+ * Renders the main menu with theme options.
  */
 function renderMainMenu() {
     // Display background image
@@ -44,15 +42,9 @@ function renderMainMenu() {
         });
     }
 
-    // Display mute button
-    if (!muteButton) {
-        muteButton = createButton("Mute");
-        muteButton.position(width - 100, 20);
-        muteButton.mousePressed(toggleBackgroundMusic);
+    if(backgroundMusic){
+        createMuteButton();
     }
-
-    // Ensure background music is playing
-    playBackgroundMusic();
 }
 
 /**
@@ -96,48 +88,24 @@ function clearButtons() {
     removeHintButton();
 }
 
-/**
- * Toggles background music on/off.
- */
-function toggleBackgroundMusic() {
-    if (backgroundMusic.isPlaying()) {
-        backgroundMusic.stop();
-        muteButton.html("Unmute");
-    } else {
-        backgroundMusic.loop();
-        muteButton.html("Mute");
-    }
-}
-
-/**
- * Creates a mute button for the background music
- */
 function createMuteButton() {
-    // Create a "Mute" button
-    let muteButton = createButton('Mute');
-    muteButton.size(100, 40); // Set button size
-    muteButton.position(1400, 10); // Position the button at the top-right corner
-    muteButton.mousePressed(() => {
-        if (backgroundMusic && backgroundMusic.isPlaying()) {
-            backgroundMusic.stop(); // Stop the music
-            muteButton.html('Unmute'); // Update button label
-        } else if (backgroundMusic) {
-            backgroundMusic.loop(); // Play the music
-            backgroundMusic.setVolume(0.5); // Adjust volume
-            muteButton.html('Mute'); // Update button label
-        }
-    });
-}
+    if (!muteButton) { // Only create the button if it doesn't already exist
+        muteButton = createButton('unmute'); // Global variable
+        muteButton.size(100, 40); // Set button size
+        muteButton.position(1400, 10); // Position the button at the top-right corner
 
-/**
- * Plays the background music if not already playing.
- */
-function playBackgroundMusic() {
-    if (backgroundMusic && !backgroundMusic.isPlaying()) {
-        backgroundMusic.loop();
+        muteButton.mousePressed(() => {
+            if (backgroundMusic.isPlaying() === true) {
+                backgroundMusic.stop(); // Stop the music
+                muteButton.html('Unmute'); // Update button label
+            } else if (backgroundMusic.isPlaying() === false) {
+                backgroundMusic.loop(); // Play the music
+                backgroundMusic.setVolume(0.5); // Adjust volume
+                muteButton.html('Mute'); // Update button label
+            }
+        });
     }
 }
-
 
 /**
  * Handles theme selection and transitions to the theme lobby.
