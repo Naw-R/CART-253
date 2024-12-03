@@ -394,6 +394,9 @@ function checkWord(userInput, solution) {
  * Loads the next puzzle in sequence or returns to the theme lobby.
  */
 function loadNextPuzzle() {
+    // Increment the round count when moving to the next puzzle
+    inGameState.roundCount++;
+    
     if (inGameState.roundCount >= 10) {
         endGame(true); // End the game, passing "true" to indicate completion
         return;
