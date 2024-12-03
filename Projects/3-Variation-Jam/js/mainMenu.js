@@ -1,89 +1,111 @@
 /**
- * This is the Main Menu of the game
+ * The Main Menu Script
  * 
- * This script handles the main menu functionality.
- * It allows players to navigate between different themes and control background music.
+ * This script handles the main menu functionality for the Emoji Word Guessing Game.
+ * It includes rendering the menu, managing theme selection, and controlling background music.
  * 
  * Functions Overview:
- * - displayMenu(): Sets up and renders the main menu screen with options.
- * - createThemeButton(label, y, onClick): Creates a button for a specific theme.
- * - clearMenuButtons(): Removes all dynamically created buttons from the menu.
- * - stopBackgroundMusic(): Stops music playback if active.
- * - createMuteButton(): Adds a mute button to toggle background music on/off.
- * - menuButtons: Stores references to dynamically created buttons for cleanup.
+ * - renderMainMenu(): Displays the main menu with theme options and a mute button.
+ * - createThemeButton(label, y, onClick): Dynamically creates buttons for theme selection.
+ * - clearButtons(): Clears all buttons and UI elements from the screen.
+ * - toggleBackgroundMusic(): Toggles background music on or off.
+ * - createMuteButton(): Creates a button to mute or unmute the background music.
+ * - playBackgroundMusic(): Ensures background music is playing.
+ * - selectTheme(theme): Handles theme selection and transitions to the theme lobby.
  */
 
 // Array to store references to menu buttons
 let menuButtons = [];
 
 /**
- * Displays the main menu.
+ * Renders the main menu with theme options and a mute button.
  */
-function displayMenu() {
-    background(255);
-    inMainMenu = true;
-    selectedTheme = null;
-
-    clearMenuButtons();
-
+function renderMainMenu() {
+    // Display background image
     if (backgroundImage) {
         image(backgroundImage, 0, 0, width, height);
     }
 
-    // Play background music (only if not already playing)
-    console.log('Checking background music state...');
-    if (backgroundMusic && !backgroundMusic.isPlaying()) {
-        console.log('Playing background music');
-        backgroundMusic.loop();
-        backgroundMusic.setVolume(1);
-    }
-
-    // Create a mute button for user control
-    createMuteButton();
-
-    textSize(64);
+    // Display title
+    textSize(48);
     textAlign(CENTER, CENTER);
     fill(255);
-    stroke(0);
-    strokeWeight(5);
-    text("Welcome to the Guess the Emoji Game!", width / 2, 100);
+    text("Guess the Emoji Game!", width / 2, height / 4);
 
-    textSize(20);
-    createThemeButton("Movie Titles", 200, () => selectTheme("movies"));
-    createThemeButton("Song Lyrics", 260, () => selectTheme("songs"));
-    createThemeButton("Book Titles", 320, () => selectTheme("books"));
-    createThemeButton("TV Shows", 380, () => selectTheme("tv"));
-    createThemeButton("Countries and Capitals", 440, () => selectTheme("countries"));
-    createThemeButton("Brands and Logos", 500, () => selectTheme("brands"));
+    // Display theme buttons
+    if (themeButtons.length === 0) {
+        const themes = ["movies", "songs", "books", "tv", "countries", "brands"];
+        themes.forEach((theme, index) => {
+            createThemeButton(
+                capitalize(theme),
+                height / 3 + index * 60,
+                () => selectTheme(theme)
+            );
+        });
+    }
+
+    // Display mute button
+    if (!muteButton) {
+        muteButton = createButton("Mute");
+        muteButton.position(width - 100, 20);
+        muteButton.mousePressed(toggleBackgroundMusic);
+    }
+
+    // Ensure background music is playing
+    playBackgroundMusic();
 }
 
 /**
- * Creates a theme button and adds it to the global menuButtons array.
+ * Creates a button for a theme.
+ * @param {string} label - The button label.
+ * @param {number} y - The vertical position of the button.
+ * @param {function} onClick - The function to call on button press.
  */
 function createThemeButton(label, y, onClick) {
-    let button = createButton(label);
+    const button = createButton(label);
     button.position(width / 2 - 100, y);
     button.size(200, 40);
     button.mousePressed(onClick);
-    menuButtons.push(button); // Store the button reference
+    themeButtons.push(button);
 }
 
 /**
- * Clears all buttons created in the main menu.
+ * Clears all buttons on the screen.
  */
-function clearMenuButtons() {
-    for (let button of menuButtons) {
-        button.remove(); // Remove each button
+function clearButtons() {
+    themeButtons.forEach(button => button.remove());
+    themeButtons = [];
+
+    if (startButton) {
+        startButton.remove();
+        startButton = null;
     }
-    menuButtons = []; // Reset the array
+
+    if (backButton) {
+        backButton.remove();
+        backButton = null;
+    }
+
+    if (muteButton) {
+        muteButton.remove();
+        muteButton = null;
+    }
+
+    // Also remove Skip and Hint buttons
+    removeSkipButton();
+    removeHintButton();
 }
 
 /**
- * Stops background music playback.
+ * Toggles background music on/off.
  */
-function stopBackgroundMusic() {
-    if (backgroundMusic && backgroundMusic.isPlaying()) { // Added null check
+function toggleBackgroundMusic() {
+    if (backgroundMusic.isPlaying()) {
         backgroundMusic.stop();
+        muteButton.html("Unmute");
+    } else {
+        backgroundMusic.loop();
+        muteButton.html("Mute");
     }
 }
 
@@ -105,4 +127,28 @@ function createMuteButton() {
             muteButton.html('Mute'); // Update button label
         }
     });
+}
+
+/**
+ * Plays the background music if not already playing.
+ */
+function playBackgroundMusic() {
+    if (backgroundMusic && !backgroundMusic.isPlaying()) {
+        backgroundMusic.loop();
+    }
+}
+
+
+/**
+ * Handles theme selection and transitions to the theme lobby.
+ * @param {string} theme - The selected theme.
+ */
+function selectTheme(theme) {
+    if (!theme) {
+        console.error("Invalid theme selected");
+        return;
+    }
+    selectedTheme = theme; // Set the selected theme
+    console.log(`Theme selected: ${theme}`); // Debug log
+    updateState(GameState.THEME_LOBBY); // Transition to the theme lobby
 }

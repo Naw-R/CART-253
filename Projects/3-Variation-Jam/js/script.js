@@ -1,19 +1,20 @@
-/**
- * The main Script
- * 
- * This script manages the core functionality of the Emoji Word Guessing Game.
- * It handles the overall game state, UI transitions, and rendering for the
- * main menu, theme selection, and gameplay screens.
- * 
- * Functions Overview:
- * - preload(): Loads assets such as background images and music.
- * - setup(): Initializes the canvas and starts the main menu.
- * - draw(): Continuously renders the UI based on the active game state.
- * - updateState(): Switches between game states and resets UI elements.
- * - renderMainMenu(), renderThemeLobby(), renderGameplay(): Handle UI rendering for different states.
- * - startGameplay(): Initializes the gameplay state.
- * - Helper functions: Manage buttons, capitalize strings, and play music.
- */
+/* The Main Script
+* 
+* This script manages the core functionality of the Emoji Word Guessing Game.
+* It handles the overall game state, UI transitions, and rendering for the
+* theme selection and gameplay screens.
+*
+* Functions Overview:
+* - preload(): Loads assets such as background images and music.
+* - setup(): Initializes the canvas and sets the initial game state.
+* - draw(): Continuously renders the UI based on the active game state.
+* - updateState(): Switches between game states and resets UI elements.
+* - clearCanvas(): Clears the screen and renders the appropriate background.
+* - renderThemeLobby(): Displays the theme selection lobby with start options.
+* - renderGameplay(): Manages the gameplay UI, including puzzles and the timer.
+* - startGameplay(): Initializes the gameplay environment and logic.
+* - capitalize(): Helper function to format strings.
+**/
 
 // Game state constants
 const GameState = {
@@ -143,44 +144,6 @@ function clearCanvas() {
 }
 
 /**
- * Renders the main menu with theme options and a mute button.
- */
-function renderMainMenu() {
-    // Display background image
-    if (backgroundImage) {
-        image(backgroundImage, 0, 0, width, height);
-    }
-
-    // Display title
-    textSize(48);
-    textAlign(CENTER, CENTER);
-    fill(255);
-    text("Guess the Emoji Game!", width / 2, height / 4);
-
-    // Display theme buttons
-    if (themeButtons.length === 0) {
-        const themes = ["movies", "songs", "books", "tv", "countries", "brands"];
-        themes.forEach((theme, index) => {
-            createThemeButton(
-                capitalize(theme),
-                height / 3 + index * 60,
-                () => selectTheme(theme)
-            );
-        });
-    }
-
-    // Display mute button
-    if (!muteButton) {
-        muteButton = createButton("Mute");
-        muteButton.position(width - 100, 20);
-        muteButton.mousePressed(toggleBackgroundMusic);
-    }
-
-    // Ensure background music is playing
-    playBackgroundMusic();
-}
-
-/**
  * Renders the theme lobby with the title and navigation buttons.
  */
 function renderThemeLobby() {
@@ -256,69 +219,6 @@ function renderGameplay() {
 }
 
 /**
- * Toggles background music on/off.
- */
-function toggleBackgroundMusic() {
-    if (backgroundMusic.isPlaying()) {
-        backgroundMusic.stop();
-        muteButton.html("Unmute");
-    } else {
-        backgroundMusic.loop();
-        muteButton.html("Mute");
-    }
-}
-
-/**
- * Plays the background music if not already playing.
- */
-function playBackgroundMusic() {
-    if (backgroundMusic && !backgroundMusic.isPlaying()) {
-        backgroundMusic.loop();
-    }
-}
-
-/**
- * Clears all buttons on the screen.
- */
-function clearButtons() {
-    themeButtons.forEach(button => button.remove());
-    themeButtons = [];
-
-    if (startButton) {
-        startButton.remove();
-        startButton = null;
-    }
-
-    if (backButton) {
-        backButton.remove();
-        backButton = null;
-    }
-
-    if (muteButton) {
-        muteButton.remove();
-        muteButton = null;
-    }
-
-    // Also remove Skip and Hint buttons
-    removeSkipButton();
-    removeHintButton();
-}
-
-/**
- * Creates a button for a theme.
- * @param {string} label - The button label.
- * @param {number} y - The vertical position of the button.
- * @param {function} onClick - The function to call on button press.
- */
-function createThemeButton(label, y, onClick) {
-    const button = createButton(label);
-    button.position(width / 2 - 100, y);
-    button.size(200, 40);
-    button.mousePressed(onClick);
-    themeButtons.push(button);
-}
-
-/**
  * Capitalizes the first letter of a string.
  * @param {string} str - The string to capitalize.
  * @returns {string} - The capitalized string.
@@ -329,18 +229,4 @@ function capitalize(str) {
         return "";
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-/**
- * Handles theme selection and transitions to the theme lobby.
- * @param {string} theme - The selected theme.
- */
-function selectTheme(theme) {
-    if (!theme) {
-        console.error("Invalid theme selected");
-        return;
-    }
-    selectedTheme = theme; // Set the selected theme
-    console.log(`Theme selected: ${theme}`); // Debug log
-    updateState(GameState.THEME_LOBBY); // Transition to the theme lobby
 }
