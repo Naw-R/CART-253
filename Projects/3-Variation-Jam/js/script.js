@@ -214,6 +214,7 @@ function renderGameplay() {
             removeSkipButton(); // Remove the Skip button
             removeHintButton(); // Remove the Hint button
             updateState(GameState.MAIN_MENU); // Go back to the main menu
+            resetGameState(); // Reset the game state
         });
     }
 }

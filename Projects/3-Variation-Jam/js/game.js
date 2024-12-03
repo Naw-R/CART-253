@@ -20,9 +20,6 @@
  *   - addHintButton(), removeHintButton(): Manage the hint button.
  *   - resetGameState(): Resets the game state when exiting gameplay.
  *   - revealOneLetter(): Reveals a random letter in the puzzle as a hint.
- * - Scoring:
- *   - Players earn points for correct guesses and puzzle completion.
- *   - Score penalties are applied for using hints or skipping puzzles.
  */
 
 // Global game state
@@ -396,7 +393,7 @@ function checkWord(userInput, solution) {
 function loadNextPuzzle() {
     // Increment the round count when moving to the next puzzle
     inGameState.roundCount++;
-    
+
     if (inGameState.roundCount >= 10) {
         endGame(true); // End the game, passing "true" to indicate completion
         return;
