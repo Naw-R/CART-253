@@ -92,18 +92,11 @@ function initializeGame(puzzle) {
 
     console.log("Initializing puzzle:", puzzle.title);
 
-    // Increment the round counter
-    inGameState.roundCount++;
-
-    // Check if round limit is reached
-    if (inGameState.roundCount > 10) {
-        endGame(true); // End the game, passing "true" to indicate completion
-        return;
-    }
-
     // Reset game inputs for the new puzzle
     currentInput = Array(puzzle.title.length).fill(null); // Clear user input
-    frozenLetters = Array(puzzle.title.length).fill(false); // Reset frozen letters
+    frozenLetters = Array(puzzle.title.length).map((_, i) =>
+        puzzle.title[i].match(/[^a-zA-Z0-9]/) ? true : false
+    ); // Freeze special characters
     inGameState.guessedLetters = Array(puzzle.title.length).fill(null); // Reset guessed letters
     inGameState.hintsUsed = 0; // Reset the hint counter
 
@@ -124,32 +117,44 @@ function initializeGame(puzzle) {
  * @param {string} emojis - The puzzle's emojis.
  * @param {string} title - The puzzle's title.
  */
-function drawGameBoard(emojis, title) {
-    // Render emojis
-    textSize(64);
-    textAlign(CENTER, CENTER);
-    text(emojis, width / 2, height / 3);
-
-    // Draw letter slots for the title
-    const slotWidth = 50; // Width of each slot
-    const slotHeight = 50; // Height of each slot
-    const startX = width / 2 - (title.replace(/\s/g, "").length * slotWidth) / 2; // Center the slots
+function drawGameBoard(emoji, solution) {
+    const slotWidth = 50; // Width of each letter square or character slot
+    const slotHeight = 50; // Height of each letter square
+    const startX = width / 2 - (solution.length * slotWidth) / 2; // Center horizontally
     let x = startX;
 
-    for (let char of title) {
+    // Draw emojis
+    textSize(64);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
+
+    // Draw the word slots
+    for (let i = 0; i < solution.length; i++) {
+        const char = solution[i];
+
         if (char === " ") {
-            x += slotWidth; // Skip spaces
+            // Space: Leave a gap
+            x += slotWidth;
             continue;
         }
 
-        // Draw each slot as a white square with a black border
-        fill(255); // White fill
-        stroke(0); // Black border
-        strokeWeight(2); // Thickness of the border
-        rect(x, height / 2, slotWidth, slotHeight);
+        if (char.match(/[^a-zA-Z0-9]/)) {
+            // Special characters: Display them directly
+            textSize(32);
+            textAlign(CENTER, CENTER);
+            fill(0);
+            noStroke();
+            text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
+        } else {
+            // Regular letters: Draw a square
+            fill(255);
+            stroke(0);
+            strokeWeight(2);
+            rect(x, height / 2, slotWidth, slotHeight);
+        }
 
-        x += slotWidth; // Move to the next slot position
-
+        x += slotWidth; // Move to the next slot
     }
 }
 
@@ -227,35 +232,46 @@ function handleLetterInput(letter) {
 function updateBoard(guesses, solution, validate = false) {
     const slotWidth = 50;
     const slotHeight = 50;
-    const startX = width / 2 - (solution.replace(/\s/g, "").length * slotWidth) / 2;
+    const startX = width / 2 - (solution.length * slotWidth) / 2;
     let x = startX;
 
     for (let i = 0; i < solution.length; i++) {
-        if (solution[i] === " ") {
-            x += slotWidth;
+        const char = solution[i];
+
+        if (char === " ") {
+            x += slotWidth; // Leave space for gaps
             continue;
         }
 
-        fill(255);
-        stroke(0);
-        strokeWeight(2);
-        rect(x, height / 2, slotWidth, slotHeight);
-
-        if (guesses[i]) {
+        if (char.match(/[^a-zA-Z0-9]/)) {
+            // Special characters: Display directly
             textSize(32);
             textAlign(CENTER, CENTER);
             fill(0);
-            text(guesses[i], x + slotWidth / 2, height / 2 + slotHeight / 2);
+            text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
+        } else {
+            // Regular letters: Draw the square and guessed letter if available
+            fill(255);
+            stroke(0);
+            strokeWeight(2);
+            rect(x, height / 2, slotWidth, slotHeight);
+
+            if (guesses[i]) {
+                textSize(32);
+                textAlign(CENTER, CENTER);
+                fill(validate && guesses[i].toLowerCase() === char.toLowerCase() ? 'green' : 'black');
+                text(guesses[i], x + slotWidth / 2, height / 2 + slotHeight / 2);
+            }
         }
 
         x += slotWidth;
     }
-
+    
     //Display the score
     textSize(24);
     textAlign(CENTER, CENTER);
     fill(0);
-    text(`Score: ${inGameState.score}`, window.innerWidth/2, 100);
+    text(`Score: ${inGameState.score}`, window.innerWidth / 2, 100);
 }
 
 /**
