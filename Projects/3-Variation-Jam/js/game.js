@@ -161,8 +161,8 @@ function drawGameBoard(emoji, solution) {
             continue;
         }
 
-        if (char.match(/[^a-zA-Z0-9]/)) {
-            // Special characters: Display them directly
+        if (char.match(/[^a-zA-Z]/) || char.match(/[0-9]/)) {
+            // Special characters and numbers: Display them directly
             textSize(32);
             textAlign(CENTER, CENTER);
             fill(0);
@@ -265,7 +265,7 @@ function updateBoard(guesses, solution, validate = false) {
             continue;
         }
 
-        if (char.match(/[^a-zA-Z0-9]/)) {
+        if (char.match(/[^a-zA-Z0-9]/) || char.match(/[0-9]/)) {
             // Special characters: Display directly
             textSize(32);
             textAlign(CENTER, CENTER);
