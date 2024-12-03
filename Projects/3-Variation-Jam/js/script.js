@@ -1,6 +1,18 @@
 /**
- * script.js
- * Handles the overall game state, UI transitions, and main menu rendering.
+ * The main Script
+ * 
+ * This script manages the core functionality of the Emoji Word Guessing Game.
+ * It handles the overall game state, UI transitions, and rendering for the
+ * main menu, theme selection, and gameplay screens.
+ * 
+ * Functions Overview:
+ * - preload(): Loads assets such as background images and music.
+ * - setup(): Initializes the canvas and starts the main menu.
+ * - draw(): Continuously renders the UI based on the active game state.
+ * - updateState(): Switches between game states and resets UI elements.
+ * - renderMainMenu(), renderThemeLobby(), renderGameplay(): Handle UI rendering for different states.
+ * - startGameplay(): Initializes the gameplay state.
+ * - Helper functions: Manage buttons, capitalize strings, and play music.
  */
 
 // Game state constants

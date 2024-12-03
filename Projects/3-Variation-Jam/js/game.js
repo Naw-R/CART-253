@@ -1,6 +1,28 @@
 /**
- * game.js
- * Handles the gameplay functionality of the Emoji Word Guessing Game
+ * This is the file that handles all game events.
+ * 
+ * This code handles the core gameplay functionality of the Emoji Word Guessing Game.
+ * It manages the game state, puzzle logic, and user interactions during the game.
+ * 
+ * Functions Overview:
+ * - Game Initialization:
+ *   - initializeGame(puzzle): Prepares the game for a new puzzle.
+ *   - loadTheme(themeName): Loads puzzles for the selected theme.
+ *   - extractPuzzles(data, themeName): Extracts and normalizes puzzle data from JSON files.
+ * - Gameplay Mechanics:
+ *   - handleInput(key): Processes player input.
+ *   - updateBoard(guesses, solution, validate): Updates the game board with player guesses.
+ *   - checkWord(userInput, solution): Validates the player's word against the solution.
+ *   - revealHint(): Provides hints to assist players.
+ *   - skipPuzzle(): Skips the current puzzle with a score penalty.
+ * - Utility Functions:
+ *   - addSkipButton(), removeSkipButton(): Manage the skip button.
+ *   - addHintButton(), removeHintButton(): Manage the hint button.
+ *   - resetGameState(): Resets the game state when exiting gameplay.
+ *   - revealOneLetter(): Reveals a random letter in the puzzle as a hint.
+ * - Scoring:
+ *   - Players earn points for correct guesses and puzzle completion.
+ *   - Score penalties are applied for using hints or skipping puzzles.
  */
 
 // Global game state
@@ -266,7 +288,7 @@ function updateBoard(guesses, solution, validate = false) {
 
         x += slotWidth;
     }
-    
+
     //Display the score
     textSize(24);
     textAlign(CENTER, CENTER);
@@ -367,7 +389,6 @@ function checkWord(userInput, solution) {
         console.log("Incorrect word. Please try again.");
     }
 }
-
 
 /**
  * Loads the next puzzle in sequence or returns to the theme lobby.

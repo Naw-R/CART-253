@@ -1,11 +1,20 @@
 /**
- * mainmenu.js
- * Main menu functionality for the Emoji Word Guessing Game
+ * This is the Main Menu of the game
+ * 
+ * This script handles the main menu functionality.
+ * It allows players to navigate between different themes and control background music.
+ * 
+ * Functions Overview:
+ * - displayMenu(): Sets up and renders the main menu screen with options.
+ * - createThemeButton(label, y, onClick): Creates a button for a specific theme.
+ * - clearMenuButtons(): Removes all dynamically created buttons from the menu.
+ * - stopBackgroundMusic(): Stops music playback if active.
+ * - createMuteButton(): Adds a mute button to toggle background music on/off.
+ * - menuButtons: Stores references to dynamically created buttons for cleanup.
  */
 
 // Array to store references to menu buttons
 let menuButtons = [];
-
 
 /**
  * Displays the main menu.
@@ -78,6 +87,9 @@ function stopBackgroundMusic() {
     }
 }
 
+/**
+ * Creates a mute button for the background music
+ */
 function createMuteButton() {
     // Create a "Mute" button
     let muteButton = createButton('Mute');

@@ -1,8 +1,20 @@
 /**
- * timer.js
- * Timer functionality for the Emoji Word Guessing Game
+ * This handles the timer functionality for the Emoji Word Guessing Game.
+ * 
+ * This script handles timer initialization, updating,
+ * rendering, and timeout logic for each puzzle in the game.
+ * 
+ * Functions Overview:
+ * - startTimer() : Starts the timer.
+ * - updateTimer() : Updates the timer.
+ * - drawTimer() : Draws the timer.
+ * - handleTimeOut() : Handles time out events.
+ * - displayCorrectAnswer(): Displays correct answer when timer's up.
+ * - resetTimer() : Resets the timer to its initial state.
+ * - stopTimer() : Stops the timer.
+ * - gameOver() : Starts the game over.
+ * - drawTimerBar(remainingTime) : Draws the timer bar.
  */
-
 
 /**
  * Starts the timer.
