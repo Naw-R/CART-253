@@ -86,59 +86,11 @@ function initializeGame(puzzle) {
     startTimer(); // Start the timer for the new puzzle
 
     // Draw the game board with emojis and slots
-    drawGameBoard(puzzle.emoji, puzzle.title);
+    updateBoard(puzzle.emoji, puzzle.title);
 
     // Add buttons (Hint and Skip)
     addHintButton();
     addSkipButton();
-}
-
-/**
- * Draws the game board with emojis and letter slots.
- * @param {string} emojis - The puzzle's emojis.
- * @param {string} title - The puzzle's title.
- */
-function drawGameBoard(emoji, solution) {
-    const slotWidth = 50; // Width of each letter square or character slot
-    const slotHeight = 50; // Height of each letter square
-    const startX = width / 2 - (solution.length * slotWidth) / 2; // Center horizontally
-    let x = startX;
-
-    // Draw emojis
-    textSize(64);
-    textAlign(CENTER, CENTER);
-    fill(0);
-    text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
-
-    // Draw the word slots
-    for (let i = 0; i < solution.length; i++) {
-        const char = solution[i];
-
-        if (char === " ") {
-            // Space: Leave a gap
-            x += slotWidth;
-            continue;
-        }
-
-        if (char.match(/[^a-zA-Z]/) || char.match(/[0-9]/)) {
-            // Special characters and numbers: Display them directly
-            textSize(32);
-            textAlign(CENTER, CENTER);
-            fill(0);
-            noStroke();
-            text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
-        } else {
-            // Regular letters: Draw a square
-            fill(255);
-            stroke(0);
-            strokeWeight(2);
-            rect(x, height / 2, slotWidth, slotHeight);
-        }
-
-        x += slotWidth; // Move to the next slot
-    }
-
-    displayScore(); // Display the score
 }
 
 /**
@@ -152,6 +104,15 @@ function updateBoard(guesses, solution, validate = false) {
     const slotHeight = 50;
     const startX = width / 2 - (solution.length * slotWidth) / 2;
     let x = startX;
+
+    // Ensure emoji is fetched from the puzzle object
+    const emoji = inGameState.puzzle?.emoji || "❓"; // Default to "❓" if no emoji exists
+
+    // Draw emojis
+    textSize(64);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
 
     for (let i = 0; i < solution.length; i++) {
         const char = solution[i];
@@ -177,13 +138,14 @@ function updateBoard(guesses, solution, validate = false) {
             if (guesses[i]) {
                 textSize(32);
                 textAlign(CENTER, CENTER);
-                fill(validate && guesses[i].toLowerCase() === char.toLowerCase() ? 'green' : 'black');
+                fill(validate && guesses[i].toLowerCase() === char.toLowerCase() ? "green" : "black");
                 text(guesses[i], x + slotWidth / 2, height / 2 + slotHeight / 2);
             }
         }
 
         x += slotWidth;
     }
+    displayScore();
 }
 
 /**

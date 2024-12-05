@@ -187,6 +187,9 @@ function startGameplay() {
 /**
  * Renders the gameplay UI with the timer, theme title, and puzzle.
  */
+/**
+ * Renders the gameplay UI with the timer, theme title, and puzzle.
+ */
 function renderGameplay() {
     // Display timer
     textSize(24);
@@ -199,10 +202,14 @@ function renderGameplay() {
     textSize(32);
     text(`${capitalize(selectedTheme)} Theme`, width / 2, 20); // Top-center theme title
 
-    // Display puzzle (handled by game.js)
-    if (inGameState.puzzle) {
-        drawGameBoard(inGameState.puzzle.emoji, inGameState.puzzle.title); // Render emojis and slots
+    // Ensure puzzle is initialized before rendering
+    if (!inGameState.puzzle || !inGameState.puzzle.emoji || !inGameState.puzzle.title) {
+        console.error("Puzzle data is missing or incomplete. Cannot render gameplay.");
+        return; // Stop further rendering if the puzzle is invalid
     }
+
+    // Render emojis and slots
+    updateBoard(currentInput, inGameState.puzzle.title, false); 
 
     // Create Return to Main Menu button
     if (!backButton) {
