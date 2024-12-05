@@ -55,12 +55,10 @@ function extractPuzzles(data, themeName) {
     return []; // Return an empty array to prevent further errors
 }
 
-
 /**
- * Check the input state of the word
- * @param {array} userInput 
- * @param {string} solution 
- * @returns 
+ * Validates the user's input against the solution and updates the game state.
+ * @param {Array} userInput - The array of letters guessed by the user.
+ * @param {string} solution - The correct word or phrase to guess.
  */
 function checkWord(userInput, solution) {
     if (!Array.isArray(userInput)) {
@@ -68,34 +66,47 @@ function checkWord(userInput, solution) {
         return;
     }
 
-    const trimmedInput = userInput.filter((char) => char !== null).join("");
-    const trimmedSolution = solution.replace(/\s/g, "");
+    // Clean and prepare the input and solution for comparison
+    const trimmedInput = userInput.filter((char) => char !== null).join("").trim();
+    const trimmedSolution = solution.replace(/\s/g, "").trim();
 
-    if (!trimmedInput || trimmedInput.length !== trimmedSolution.length) {
-        console.log("Invalid input length: Input and solution lengths do not match.");
+    if (trimmedInput.length !== trimmedSolution.length) {
+        console.warn("Input length does not match solution length.");
         return;
     }
 
-    let isWordCorrect = true;
+    let isWordCorrect = true; // Track overall correctness
 
-    // Validate each letter and update the score for correct letters
-    for (let i = 0; i < trimmedSolution.length; i++) {
-        if (trimmedSolution[i].toLowerCase() === trimmedInput[i]?.toLowerCase()) {
-            frozenLetters[i] = true;
-            inGameState.score += 10; // Add 10 points per correct letter
-        } else {
-            isWordCorrect = false;
+    // Iterate through the solution and user input for validation
+    for (let i = 0; i < solution.length; i++) {
+        const solutionChar = solution[i]; // Current solution character
+        const userChar = userInput[i]; // Current user input character
+
+        if (solutionChar === " ") {
+            // Handle spaces: skip processing and continue
+            continue;
+        }
+
+        if (/[a-zA-Z0-9]/.test(solutionChar)) { // Process only valid alphanumeric characters
+            if (userChar?.toLowerCase() === solutionChar.toLowerCase()) {
+                frozenLetters[i] = true; // Mark this letter as correctly guessed
+                inGameState.score += 10; // Add score for correct letter
+            } else {
+                isWordCorrect = false; // Mark the word as incorrect
+            }
         }
     }
 
+    // Update the board to reflect changes visually
     updateBoard(userInput, solution, true);
 
+    // Handle end-of-word state
     if (isWordCorrect) {
         console.log("Correct word guessed! Moving to the next puzzle.");
-        inGameState.score += 50; // Add a bonus for solving the puzzle
-        loadNextPuzzle();
+        inGameState.score += 50; // Bonus points for solving the word
+        loadNextPuzzle(); // Proceed to the next puzzle
     } else {
-        console.log("Incorrect word. Please try again.");
+        console.log("Incorrect guess. Keep trying!");
     }
 }
 
