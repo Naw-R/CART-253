@@ -1,7 +1,16 @@
 /**
- * This is input.js
  * 
- * input.js is for handling keyboard input
+ * This file handles all keyboard input interactions for the Emoji Word Guessing Game. 
+ * It processes user keystrokes, delegates input to appropriate handlers, and updates 
+ * the game board accordingly. 
+ * 
+ * Functions Overview:
+ * - handleInput(key): The main entry point for processing keyboard input.
+ * - dispatchInput(key): Determines the type of input (e.g., letter, Enter, Backspace).
+ * - handleBackspace(): Clears non-frozen letters from the user input.
+ * - handleEnter(): Submits the current input for validation.
+ * - handleLetterInput(letter): Adds a valid letter to the next available slot.
+ * - keyPressed(): Captures key press events and delegates them to `handleInput`.
  */
 
 

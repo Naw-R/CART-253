@@ -1,25 +1,14 @@
 /**
- * This is the file that handles all game events.
  * 
- * This code handles the core gameplay functionality of the Emoji Word Guessing Game.
- * It manages the game state, puzzle logic, and user interactions during the game.
+ * This file is responsible for managing the core gameplay functionality of the Emoji Word Guessing Game. 
+ * It handles game state management, puzzle initialization, user interactions, and overall game flow.
  * 
  * Functions Overview:
- * - Game Initialization:
- *   - initializeGame(puzzle): Prepares the game for a new puzzle.
- *   - loadTheme(themeName): Loads puzzles for the selected theme.
- *   - extractPuzzles(data, themeName): Extracts and normalizes puzzle data from JSON files.
- * - Gameplay Mechanics:
- *   - handleInput(key): Processes player input.
- *   - updateBoard(guesses, solution, validate): Updates the game board with player guesses.
- *   - checkWord(userInput, solution): Validates the player's word against the solution.
- *   - revealHint(): Provides hints to assist players.
- *   - skipPuzzle(): Skips the current puzzle with a score penalty.
- * - Utility Functions:
- *   - addSkipButton(), removeSkipButton(): Manage the skip button.
- *   - addHintButton(), removeHintButton(): Manage the hint button.
- *   - resetGameState(): Resets the game state when exiting gameplay.
- *   - revealOneLetter(): Reveals a random letter in the puzzle as a hint.
+ *   - initializeGame(puzzle): Sets up a new puzzle, including the timer, input tracking, and board rendering.
+ *   - loadTheme(themeName): Loads puzzles from JSON files based on the selected theme.
+ *   - updateBoard(guesses, solution, validate): Updates the game board with user input and feedback.
+ *   - endGame(won): Handles win/lose conditions and transitions to the appropriate state.
+ *   - resetGameState(): Resets all game-related state variables and UI elements.
  */
 
 // Global game state

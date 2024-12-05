@@ -183,9 +183,6 @@ function startGameplay() {
 /**
  * Renders the gameplay UI with the timer, theme title, and puzzle.
  */
-/**
- * Renders the gameplay UI with the timer, theme title, and puzzle.
- */
 function renderGameplay() {
     // Display timer
     textSize(24);

@@ -1,7 +1,20 @@
-/**
- * This is puzzle.js
+/** * 
+ * This file manages the logic and creation of puzzles in the Emoji Word Guessing Game. 
+ * It includes functionality to extract puzzles from data, validate user input, handle game flow,
+ * and manage UI elements like hint and skip buttons.
  * 
- * Puzzle.js handles the creation and logic of the puzzle
+ * Functions Overview:
+ *   - extractPuzzles(data, themeName): Extracts and normalizes puzzle data for the selected theme.
+ *   - checkWord(userInput, solution): Validates the player's input against the solution and updates the score.
+ *   - loadNextPuzzle(): Transitions to the next puzzle or ends the game if the limit is reached.
+ *   - skipPuzzle(): Skips the current puzzle with a penalty to the score.
+ *   - addSkipButton(): Creates and displays the Skip button.
+ *   - removeSkipButton(): Removes the Skip button from the UI.
+ *   - addHintButton(): Creates and displays the Hint button.
+ *   - removeHintButton(): Removes the Hint button from the UI.
+ *   - revealHint(): Reveals a hint for the current puzzle and adjusts the score.
+ *   - revealOneLetter(): Reveals a random unrevealed letter in the solution.
+ *   - displayScore(): Displays the current score on the screen.
  */
 
 /**
