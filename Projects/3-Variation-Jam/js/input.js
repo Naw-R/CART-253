@@ -1,4 +1,7 @@
 /**
+ * Guess the Emoji
+ * Rowan Nasser
+ * Guess the Emoji game using the P5.js library.
  * 
  * This file handles all keyboard input interactions for the Emoji Word Guessing Game. 
  * It processes user keystrokes, delegates input to appropriate handlers, and updates 

@@ -1,5 +1,7 @@
 /**
- * The Main Menu Script
+ * Guess the Emoji
+ * Rowan Nasser
+ * Guess the Emoji game using the P5.js library.
  * 
  * This script handles the main menu functionality for the Emoji Word Guessing Game.
  * It includes rendering the menu, managing theme selection, and controlling background music.
@@ -88,6 +90,9 @@ function clearButtons() {
     removeHintButton();
 }
 
+/**
+ * Creates a button to mute or unmute the background music.
+ */
 function createMuteButton() {
     if (!muteButton) { // Only create the button if it doesn't already exist
         muteButton = createButton('unmute'); // Global variable

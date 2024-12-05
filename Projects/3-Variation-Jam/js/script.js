@@ -1,5 +1,8 @@
-/* The Main Script
-* 
+/**
+* Guess the Emoji
+* Rowan Nasser
+* Guess the Emoji game using the P5.js library.
+*
 * This script manages the core functionality of the Emoji Word Guessing Game.
 * It handles the overall game state, UI transitions, and rendering for the
 * theme selection and gameplay screens.
@@ -13,8 +16,8 @@
 * - renderThemeLobby(): Displays the theme selection lobby with start options.
 * - renderGameplay(): Manages the gameplay UI, including puzzles and the timer.
 * - startGameplay(): Initializes the gameplay environment and logic.
-* - capitalize(): Helper function to format strings.
-**/
+* - capitalize(): Helper function to format strings. 
+*/
 
 // Game state constants
 const GameState = {
@@ -23,6 +26,7 @@ const GameState = {
     GAMEPLAY: "gameplay",
 };
 
+// Emoji constants
 const themeEmojis = {
     movies: "🎥🍿",
     books: "📚✏️",
@@ -135,7 +139,7 @@ function updateState(newState) {
             console.error(`Unknown game state: ${newState}`);
             break;
     }
-    
+
 }
 
 /**
@@ -160,7 +164,7 @@ function renderThemeLobby() {
     fill(0);
     text(`${themeEmojis[selectedTheme] || "❓"} ${capitalize(selectedTheme)} Theme selected!`, width / 2, height / 5);
     textSize(32);
-    text("Are you ready? 🏁", width / 2, height /3);
+    text("Are you ready? 🏁", width / 2, height / 3);
     if (!startButton) {
         startButton = createButton("Start Game 🎮");
         startButton.position(width / 2 - 50, height / 2);
@@ -212,7 +216,7 @@ function renderGameplay() {
     }
 
     // Render emojis and slots
-    updateBoard(currentInput, inGameState.puzzle.title, false); 
+    updateBoard(currentInput, inGameState.puzzle.title, false);
 
     // Create Return to Main Menu button
     if (!backButton) {
