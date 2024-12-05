@@ -23,6 +23,15 @@ const GameState = {
     GAMEPLAY: "gameplay",
 };
 
+const themeEmojis = {
+    movies: "🎥🍿",
+    books: "📚✏️",
+    songs: "🎵🎤",
+    tv: "📺✨",
+    countries: "🌍🗺️",
+    brands: "🏷️🛍️"
+};
+
 // Global variables
 let currentGameState = GameState.MAIN_MENU; // Initial state
 let selectedTheme = null; // Stores the selected theme
@@ -149,10 +158,9 @@ function renderThemeLobby() {
     textSize(32);
     textAlign(CENTER, CENTER);
     fill(0);
-    text(`${capitalize(selectedTheme)} Theme`, width / 2, height / 5);
-
+    text(`${themeEmojis[selectedTheme] || "❓"} ${capitalize(selectedTheme)} Theme selected!`, width / 2, height / 5);
     if (!startButton) {
-        startButton = createButton("Start Game");
+        startButton = createButton("Start Game 🎮");
         startButton.position(width / 2 - 50, height / 2);
         startButton.size(100, 50);
         startButton.mousePressed(() => {
