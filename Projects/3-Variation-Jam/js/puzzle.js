@@ -95,6 +95,7 @@ function loadNextPuzzle() {
 
     if (inGameState.roundCount >= 10) {
         endGame(true); // End the game, passing "true" to indicate completion
+        resetGameState(); // Reset the game
         return;
     }
 
