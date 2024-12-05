@@ -155,10 +155,12 @@ function renderThemeLobby() {
     console.log("Current game state:", currentGameState);
     console.log("Current puzzle:", inGameState.puzzle);
 
-    textSize(32);
+    textSize(54);
     textAlign(CENTER, CENTER);
     fill(0);
     text(`${themeEmojis[selectedTheme] || "❓"} ${capitalize(selectedTheme)} Theme selected!`, width / 2, height / 5);
+    textSize(32);
+    text("Are you ready? 🏁", width / 2, height /3);
     if (!startButton) {
         startButton = createButton("Start Game 🎮");
         startButton.position(width / 2 - 50, height / 2);
