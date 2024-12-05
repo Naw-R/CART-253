@@ -22,7 +22,7 @@
 function startTimer() {
     timerRunning = true; // Enable the timer
     lastSecondTime = millis(); // Record the starting time
-    timer = 60; // Reset to the default 60 seconds (or use puzzle-specific time if needed)
+    timer = 30; // Reset to the default 30 seconds (or use puzzle-specific time if needed)
     console.log("Timer started!");
 }
 
@@ -92,8 +92,8 @@ function displayCorrectAnswer() {
  * Resets the timer
 */
 function resetTimer() {
-    timer = 60; // Example reset logic
-    console.log("Timer reset to 60 seconds");
+    timer = 30; // Example reset logic
+    console.log("Timer reset to 30 seconds");
 }
 
 /**
@@ -123,7 +123,7 @@ function gameOver() {
  * @param {number} remainingTime - The remaining time in seconds.
  */
 function drawTimerBar(remainingTime) {
-    const timerProgress = map(remainingTime, 0, 60, 0, 1); // Map timer to a 0-1 range
+    const timerProgress = map(remainingTime, 0, 30, 0, 1); // Map timer to a 0-1 range
     let timerColor;
 
     if (remainingTime > 20) {
