@@ -30,7 +30,7 @@ The goal is to correctly guess the hidden phrase using the provided emoji clue. 
   - Squares representing the number of letters in the phrase are displayed.
   - Visual gaps indicate spaces between words in multi-word phrases.
   - Correctly guessed letters appear in their respective squares.
-- **Timer**: A countdown timer starts at 60 seconds.
+- **Timer**: A countdown timer starts at 30 seconds.
 
 ### **3. Input and Feedback**
 - Players type their guesses using the input field.

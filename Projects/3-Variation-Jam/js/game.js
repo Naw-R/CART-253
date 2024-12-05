@@ -80,6 +80,7 @@ function initializeGame(puzzle) {
     // Add buttons (Hint and Skip)
     addHintButton();
     addSkipButton();
+
 }
 
 /**
@@ -102,6 +103,12 @@ function updateBoard(guesses, solution, validate = false) {
     textAlign(CENTER, CENTER);
     fill(0);
     text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
+
+    // Draw the message to guide the player
+    textSize(20);
+    fill(50);
+    text("Click Enter to validate your guess ✅", width / 2, height / 1.5);
+
 
     for (let i = 0; i < solution.length; i++) {
         const char = solution[i];
@@ -137,6 +144,7 @@ function updateBoard(guesses, solution, validate = false) {
         // Move to the next slot
         x += slotWidth;
     }
+
 }
 
 /**
