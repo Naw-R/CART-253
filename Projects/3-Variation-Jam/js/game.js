@@ -8,18 +8,11 @@
  * - Game Initialization:
  *   - initializeGame(puzzle): Prepares the game for a new puzzle.
  *   - loadTheme(themeName): Loads puzzles for the selected theme.
- *   - extractPuzzles(data, themeName): Extracts and normalizes puzzle data from JSON files.
  * - Gameplay Mechanics:
- *   - handleInput(key): Processes player input.
- *   - updateBoard(guesses, solution, validate): Updates the game board with player guesses.
- *   - checkWord(userInput, solution): Validates the player's word against the solution.
- *   - revealHint(): Provides hints to assist players.
- *   - skipPuzzle(): Skips the current puzzle with a score penalty.
+ *   - updateBoard(guesses, solution, validate): Handles both board initialization and updates during gameplay.
  * - Utility Functions:
- *   - addSkipButton(), removeSkipButton(): Manage the skip button.
- *   - addHintButton(), removeHintButton(): Manage the hint button.
+ *   - addHintButton(), addSkipButton(): Adds interactive buttons for gameplay.
  *   - resetGameState(): Resets the game state when exiting gameplay.
- *   - revealOneLetter(): Reveals a random letter in the puzzle as a hint.
  */
 
 // Global game state
@@ -86,59 +79,11 @@ function initializeGame(puzzle) {
     startTimer(); // Start the timer for the new puzzle
 
     // Draw the game board with emojis and slots
-    drawGameBoard(puzzle.emoji, puzzle.title);
+    updateBoard(puzzle.emoji, puzzle.title);
 
     // Add buttons (Hint and Skip)
     addHintButton();
     addSkipButton();
-}
-
-/**
- * Draws the game board with emojis and letter slots.
- * @param {string} emojis - The puzzle's emojis.
- * @param {string} title - The puzzle's title.
- */
-function drawGameBoard(emoji, solution) {
-    const slotWidth = 50; // Width of each letter square or character slot
-    const slotHeight = 50; // Height of each letter square
-    const startX = width / 2 - (solution.length * slotWidth) / 2; // Center horizontally
-    let x = startX;
-
-    // Draw emojis
-    textSize(64);
-    textAlign(CENTER, CENTER);
-    fill(0);
-    text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
-
-    // Draw the word slots
-    for (let i = 0; i < solution.length; i++) {
-        const char = solution[i];
-
-        if (char === " ") {
-            // Space: Leave a gap
-            x += slotWidth;
-            continue;
-        }
-
-        if (char.match(/[^a-zA-Z]/) || char.match(/[0-9]/)) {
-            // Special characters and numbers: Display them directly
-            textSize(32);
-            textAlign(CENTER, CENTER);
-            fill(0);
-            noStroke();
-            text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
-        } else {
-            // Regular letters: Draw a square
-            fill(255);
-            stroke(0);
-            strokeWeight(2);
-            rect(x, height / 2, slotWidth, slotHeight);
-        }
-
-        x += slotWidth; // Move to the next slot
-    }
-
-    displayScore(); // Display the score
 }
 
 /**
@@ -148,10 +93,17 @@ function drawGameBoard(emoji, solution) {
  * @param {boolean} validate - Whether to validate guesses (green/red feedback).
  */
 function updateBoard(guesses, solution, validate = false) {
-    const slotWidth = 50;
-    const slotHeight = 50;
-    const startX = width / 2 - (solution.length * slotWidth) / 2;
+    const slotWidth = 50; // Width of each letter square or character slot
+    const slotHeight = 50; // Height of each letter square
+    const startX = width / 2 - (solution.length * slotWidth) / 2; // Center horizontally
     let x = startX;
+
+    // Draw emojis
+    textSize(64);h
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(emoji, width / 2, height / 4); // Draw emojis at the top of the screen
+
 
     for (let i = 0; i < solution.length; i++) {
         const char = solution[i];
@@ -166,6 +118,7 @@ function updateBoard(guesses, solution, validate = false) {
             textSize(32);
             textAlign(CENTER, CENTER);
             fill(0);
+            noStroke();
             text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
         } else {
             // Regular letters: Draw the square and guessed letter if available
@@ -184,6 +137,7 @@ function updateBoard(guesses, solution, validate = false) {
 
         x += slotWidth;
     }
+    displayScore();
 }
 
 /**
