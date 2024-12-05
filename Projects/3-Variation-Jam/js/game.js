@@ -145,7 +145,6 @@ function updateBoard(guesses, solution, validate = false) {
 
         x += slotWidth;
     }
-    displayScore();
 }
 
 /**

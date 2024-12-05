@@ -282,6 +282,7 @@ function displayScore() {
     //Display the score
     textSize(24);
     textAlign(CENTER, CENTER);
+    noStroke();
     fill(0);
     text(`Score: ${inGameState.score}`, window.innerWidth / 2, 100);
 }

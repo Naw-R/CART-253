@@ -79,14 +79,10 @@ function draw() {
                 console.error("No puzzle initialized. Cannot render gameplay.");
                 return; // Stop rendering if no puzzle is loaded
             }
-
             renderGameplay(); // Render the gameplay UI
-
             if (timerRunning) {
                 updateTimer(); // Update the timer during gameplay
             }
-
-            updateBoard(currentInput, inGameState.puzzle.title); // Update the puzzle board with user input
             break;
         default:
             console.error("Unknown game state:", currentGameState);
@@ -224,6 +220,7 @@ function renderGameplay() {
             resetGameState(); // Reset the game state
         });
     }
+    displayScore(); // Display the score
 }
 
 /**
