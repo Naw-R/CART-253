@@ -106,21 +106,23 @@ function updateBoard(guesses, solution, validate = false) {
     for (let i = 0; i < solution.length; i++) {
         const char = solution[i];
 
+        // Handle spaces by skipping and adding spacing
         if (char === " ") {
             x += slotWidth; // Leave space for gaps
             continue;
         }
 
-        if (char.match(/[^a-zA-Z0-9]/) || char.match(/[0-9]/)) {
-            // Special characters: Display directly
+        // Handle special characters: Display directly without a square
+        if (char.match(/[^a-zA-Z0-9]/)) {
             textSize(32);
             textAlign(CENTER, CENTER);
+            strokeWeight(1);
             fill(0);
             text(char, x + slotWidth / 2, height / 2 + slotHeight / 2);
         } else {
             // Regular letters: Draw the square and guessed letter if available
-            fill(255);
-            stroke(0);
+            fill(255); // White background for the square
+            stroke(frozenLetters[i] ? "green" : 0); // Green stroke for frozen (correctly guessed) letters
             strokeWeight(2);
             rect(x, height / 2, slotWidth, slotHeight);
 
@@ -132,6 +134,7 @@ function updateBoard(guesses, solution, validate = false) {
             }
         }
 
+        // Move to the next slot
         x += slotWidth;
     }
 }
