@@ -3,7 +3,6 @@
     [
   { "title": "Harry Potter", "author": "J.K. Rowling", "emoji": "🧙⚡" },
   { "title": "The Hobbit", "author": "J.R.R. Tolkien", "emoji": "🧙‍♂️🏞️" },
-  { "title": "Charlotte's Web", "author": "E.B. White", "emoji": "🕸️🐖" },
   { "title": "Matilda", "author": "Roald Dahl", "emoji": "📖🧠" },
   { "title": "Anne of Green Gables", "author": "L.M. Montgomery", "emoji": "👩‍🦰🌳" },
   { "title": "To Kill a Mockingbird", "author": "Harper Lee", "emoji": "🐦⚖️" },
@@ -34,7 +33,7 @@
   { "title": "James and the Giant Peach", "author": "Roald Dahl", "emoji": "🍑🐛" },
   { "title": "Pippi Longstocking", "author": "Astrid Lindgren", "emoji": "🧦🏠" },
   { "title": "The Polar Express", "author": "Chris Van Allsburg", "emoji": "🚂🎄" },
-  { "title": "Winnie-the-Pooh", "author": "A.A. Milne", "emoji": "🐻🍯" },
+  { "title": "Winnie the Pooh", "author": "A.A. Milne", "emoji": "🐻🍯" },
   { "title": "The Jungle Book", "author": "Rudyard Kipling", "emoji": "🐅🌴" },
   { "title": "The Little Prince", "author": "Antoine de Saint-Exupéry", "emoji": "👑🌟" },
   { "title": "Hatchet", "author": "Gary Paulsen", "emoji": "🪓🏞️" },

@@ -14,7 +14,7 @@
   { "brand": "Disney", "emoji": "🏰🐭" },
   { "brand": "Nike", "emoji": "👟✔️" },
   { "brand": "Adidas", "emoji": "👟⚽" },
-  { "brand": "Coca-Cola", "emoji": "🥤❤️" },
+  { "brand": "Coca Cola", "emoji": "🥤❤️" },
   { "brand": "Pepsi", "emoji": "🥤🔵" },
   { "brand": "Starbucks", "emoji": "☕🌿" },
   { "brand": "McDonald's", "emoji": "🍔🍟" },
@@ -25,7 +25,6 @@
   { "brand": "Walmart", "emoji": "🛒⭐" },
   { "brand": "Target", "emoji": "🎯🏬" },
   { "brand": "IKEA", "emoji": "🪑🏠" },
-  { "brand": "H&M", "emoji": "👗🛍️" },
   { "brand": "Zara", "emoji": "👕👖" },
   { "brand": "Gucci", "emoji": "👜🐍" },
   { "brand": "Louis Vuitton", "emoji": "🎒✨" },
@@ -50,7 +49,6 @@
   { "brand": "Haribo", "emoji": "🍬🐻" },
   { "brand": "Oreos", "emoji": "🍪⚫" },
   { "brand": "Pringles", "emoji": "🍟😋" },
-  { "brand": "Lay's", "emoji": "🥔😃" },
   { "brand": "Kinder", "emoji": "🍫🥚" },
   { "brand": "Ferrero Rocher", "emoji": "🍫✨" }
 ]

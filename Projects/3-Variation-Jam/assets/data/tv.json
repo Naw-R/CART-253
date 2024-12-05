@@ -21,7 +21,6 @@
   { "title": "Malcolm in the Middle", "emoji": "🎢🏠" },
   { "title": "Dora the Explorer", "emoji": "🗺️🎒" },
   { "title": "Teen Titans Go!", "emoji": "🦸‍♂️🦸‍♀️" },
-  { "title": "Scooby-Doo, Where Are You?", "emoji": "🐕🔍" },
   { "title": "Tom and Jerry", "emoji": "🐱🐭" },
   { "title": "Looney Tunes", "emoji": "🎯🐇" },
   { "title": "Arthur", "emoji": "📖🐜" },
@@ -39,14 +38,13 @@
   { "title": "Inspector Gadget", "emoji": "🔍🤖" },
   { "title": "Paw Patrol", "emoji": "🐾🚓" },
   { "title": "Bob the Builder", "emoji": "🔧🏗️" },
-  { "title": "Thomas & Friends", "emoji": "🚂😊" },
   { "title": "The Magic School Bus", "emoji": "🚌🔬" },
   { "title": "VeggieTales", "emoji": "🍅🥒" },
-  { "title": "Barney & Friends", "emoji": "🦖🎶" },
+  { "title": "Barney", "emoji": "🦖🎶" },
   { "title": "The Muppets", "emoji": "🐸🎭" },
   { "title": "Wild Kratts", "emoji": "🦁🔍" },
   { "title": "Alvin and the Chipmunks", "emoji": "🐿️🎶" },
-  { "title": "Lilo & Stitch: The Series", "emoji": "🌺👽" }
+  { "title": "Lilo and Stitch", "emoji": "🌺👽" }
 ]
 
 }
