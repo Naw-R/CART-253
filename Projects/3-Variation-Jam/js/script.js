@@ -201,7 +201,7 @@ function renderGameplay() {
 
     // Display puzzle (handled by game.js)
     if (inGameState.puzzle) {
-        updateBoard(inGameState.puzzle.emoji, inGameState.puzzle.title); // Render emojis and slots
+        drawGameBoard(inGameState.puzzle.emoji, inGameState.puzzle.title); // Render emojis and slots
     }
 
     // Create Return to Main Menu button
